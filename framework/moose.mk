@@ -391,6 +391,31 @@ endif
 wasp_submodule_status:
 	@if [ x$(wasp_submodule_message) != "x" ]; then printf $(wasp_submodule_message); exit 1; fi
 
+# Kokkos for MOOSE
+
+ifeq ($(KOKKOS),true)
+
+MOOSE_KOKKOS_LIB       := $(FRAMEWORK_DIR)/libmoose_kokkos-$(METHOD).so
+MOOSE_KOKKOS_LDFLAGS   := -L$(FRAMEWORK_DIR) -lmoose_kokkos-$(METHOD)
+
+MOOSE_KOKKOS_SRC_FILES := $(shell find $(FRAMEWORK_DIR) -name "*.K")
+MOOSE_KOKKOS_OBJECTS   := $(patsubst %.K, %.$(KOKKOS_OBJ_SUFFIX), $(MOOSE_KOKKOS_SRC_FILES))
+MOOSE_KOKKOS_DEPS      := $(patsubst %.$(KOKKOS_OBJ_SUFFIX), %.$(KOKKOS_OBJ_SUFFIX).d, $(MOOSE_KOKKOS_OBJECTS))
+
+-include $(MOOSE_KOKKOS_DEPS)
+
+ifeq ($(MOOSE_HEADER_SYMLINKS),true)
+  $(MOOSE_KOKKOS_OBJECTS): $(moose_config_symlink) moose_header_symlinks
+else
+  $(MOOSE_KOKKOS_OBJECTS): $(moose_config)
+endif
+
+$(MOOSE_KOKKOS_LIB): $(KOKKOS_LINK_DEPENDS) $(MOOSE_KOKKOS_OBJECTS)
+	@echo "Linking Kokkos Library "$@"..."
+	@$(KOKKOS_CXX) --shared -o $@ $(MOOSE_KOKKOS_OBJECTS) $(KOKKOS_LDFLAGS) $(KOKKOS_LIBS)
+
+endif
+
 # Pre-make for checking current dependency versions and showing useful warnings
 # if things like conda packages are out of date. The "-" in "@-" means that
 # it is allowed to not exit 0. "::" means that the rule can be appended by
@@ -421,14 +446,13 @@ $(hit_LIB): $(hit_objects)
 	  $(libmesh_CXX) $(CXXFLAGS) $(libmesh_CXXFLAGS) -o $@ $(hit_objects) $(libmesh_LDFLAGS) $(libmesh_LIBS) $(EXTERNAL_FLAGS) -rpath $(HIT_DIR)
 	@$(libmesh_LIBTOOL) --mode=install --quiet install -c $(hit_LIB) $(HIT_DIR)
 
-$(moose_LIB): $(moose_objects) $(pcre_LIB) $(gtest_LIB) $(hit_LIB) $(pyhit_LIB)
+$(moose_LIB): $(moose_objects) $(pcre_LIB) $(gtest_LIB) $(hit_LIB) $(pyhit_LIB) $(MOOSE_KOKKOS_LIB)
 	@echo "Linking Library "$@"..."
 	@$(libmesh_LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=link --quiet \
-	  $(libmesh_CXX) $(CXXFLAGS) $(libmesh_CXXFLAGS) -o $@ $(moose_objects) $(pcre_LIB) $(png_LIB) $(libmesh_LDFLAGS) $(libmesh_LIBS) $(EXTERNAL_FLAGS) -rpath $(FRAMEWORK_DIR)
+	  $(libmesh_CXX) $(CXXFLAGS) $(libmesh_CXXFLAGS) -o $@ $(moose_objects) $(pcre_LIB) $(png_LIB) $(libmesh_LDFLAGS) $(libmesh_LIBS) $(EXTERNAL_FLAGS) $(MOOSE_KOKKOS_LDFLAGS) -rpath $(FRAMEWORK_DIR)
 	@$(libmesh_LIBTOOL) --mode=install --quiet install -c $(moose_LIB) $(FRAMEWORK_DIR)
 
 ifeq ($(MOOSE_HEADER_SYMLINKS),true)
-
 
 $(moose_objects): $(moose_config_symlink) | moose_header_symlinks
 
@@ -552,6 +576,9 @@ app_EXEC := $(exodiff_APP)
 app_LIB  := $(moose_LIBS) $(pcre_LIB) $(gtest_LIB) $(hit_LIB) $(pyhit_LIB)
 app_objects := $(moose_objects) $(exodiff_objects) $(pcre_objects) $(gtest_objects) $(hit_objects)
 app_deps := $(moose_deps) $(exodiff_deps) $(pcre_deps) $(gtest_deps) $(hit_deps)
+app_KOKKOS_LIB := $(MOOSE_KOKKOS_LIB)
+app_KOKKOS_OBJECTS := $(MOOSE_KOKKOS_OBJECTS)
+app_KOKKOS_DEPS := $(KOKKOS_DEPS)
 
 # The clean target removes everything we can remove "easily",
 # i.e. stuff which we have Makefile variables for.  Notes:
@@ -561,9 +588,10 @@ app_deps := $(moose_deps) $(exodiff_deps) $(pcre_deps) $(gtest_deps) $(hit_deps)
 #    clean' will only clean debug object and executable files.
 # .) Calling 'make clean' in an app should not remove MOOSE object
 #    files, libraries, etc.
-clean:
+clean: $(KOKKOS_CLEAN)
 	@$(libmesh_LIBTOOL) --mode=uninstall --quiet rm -f $(app_LIB) $(app_test_LIB)
 	@rm -rf $(app_EXEC) $(app_objects) $(main_object) $(app_deps) $(app_HEADER) $(app_test_objects) $(app_unity_srcfiles)
+	@rm -rf $(app_KOKKOS_LIB) $(app_KOKKOS_OBJECTS) $(app_KOKKOS_DEPS) KokkosCore_Config_PostInclude.tmp desul
 	@rm -rf $(APPLICATION_DIR)/build
 
 # The clobber target does 'make clean' and then uses 'find' to clean a
@@ -645,3 +673,6 @@ echo_app_objects:
 
 echo_app_deps:
 	@echo $(app_deps)
+
+echo_kokkos_objects:
+	@echo $(KOKKOS_OBJECTS)

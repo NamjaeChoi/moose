@@ -365,14 +365,50 @@ $(app_HEADER): $(app_HEADER_deps) | $(all_header_dir)
 #
 app_resource = $(APPLICATION_DIR)/$(APPLICATION_NAME).yaml
 
+# Kokkos for app
+
+ifeq ($(KOKKOS),true)
+
+app_KOKKOS_SRC_FILES := $(shell find $(SRC_DIRS) -name "*.K")
+app_KOKKOS_LIB       :=
+app_KOKKOS_LDFLAGS   :=
+app_KOKKOS_OBJECTS   :=
+app_KOKKOS_DEPS      :=
+
+ifneq ($(app_KOKKOS_SRC_FILES),)
+
+app_KOKKOS_LIB     := $(APPLICATION_DIR)/lib/lib$(APPLICATION_NAME)_kokkos-$(METHOD).so
+app_KOKKOS_LDFLAGS := -L$(APPLICATION_DIR)/lib -l$(APPLICATION_NAME)_kokkos-$(METHOD)
+app_KOKKOS_OBJECTS := $(patsubst %.K, %.$(KOKKOS_OBJ_SUFFIX), $(app_KOKKOS_SRC_FILES))
+app_KOKKOS_DEPS    := $(patsubst %.$(KOKKOS_OBJ_SUFFIX), %.$(KOKKOS_OBJ_SUFFIX).d, $(app_KOKKOS_OBJECTS))
+
+-include $(app_KOKKOS_DEPS)
+
+ifeq ($(MOOSE_HEADER_SYMLINKS),true)
+  $(app_KOKKOS_OBJECTS): $(app_LINKS) $(moose_config_symlink)
+else
+  $(app_KOKKOS_OBJECTS): $(moose_config)
+endif
+
+$(app_KOKKOS_LIB): curr_objs := $(app_KOKKOS_OBJECTS)
+$(app_KOKKOS_LIB): curr_dir  := $(APPLICATION_DIR)
+$(app_KOKKOS_LIB): $(KOKKOS_LINK_DEPENDS) $(app_KOKKOS_OBJECTS)
+	@mkdir -p $(curr_dir)/lib
+	@echo "Linking Kokkos Library "$@"..."
+	@$(KOKKOS_CXX) --shared -o $@ $(curr_objs) $(KOKKOS_LDFLAGS)
+
+endif
+
+endif
+
 # Target-specific Variable Values (See GNU-make manual)
 $(app_LIB): curr_objs := $(app_objects)
 $(app_LIB): curr_dir  := $(APPLICATION_DIR)
 $(app_LIB): curr_deps := $(depend_libs)
 $(app_LIB): curr_libs := $(depend_libs_flags)
 $(app_LIB): curr_additional_depend_libs := $(ADDITIONAL_DEPEND_LIBS)
-$(app_LIB): curr_additional_libs := $(ADDITIONAL_LIBS)
-$(app_LIB): $(app_HEADER) $(app_plugin_deps) $(depend_libs) $(app_objects) $(ADDITIONAL_DEPEND_LIBS)
+$(app_LIB): curr_additional_libs := $(ADDITIONAL_LIBS) $(app_KOKKOS_LDFLAGS)
+$(app_LIB): $(app_HEADER) $(app_plugin_deps) $(depend_libs) $(app_objects) $(ADDITIONAL_DEPEND_LIBS) $(app_KOKKOS_LIB)
 	@echo "Linking Library "$@"..."
 	@$(libmesh_LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=link --quiet \
 	  $(libmesh_CXX) $(CXXFLAGS) $(libmesh_CXXFLAGS) -o $@ $(curr_objs) $(libmesh_LDFLAGS) $(EXTERNAL_FLAGS) $(curr_additional_libs) -rpath $(curr_dir)/lib $(curr_libs)

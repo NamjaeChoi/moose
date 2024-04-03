@@ -34,7 +34,8 @@ InputParameters validParams();
 class TaggingInterface
 {
 public:
-  TaggingInterface(const MooseObject * moose_object);
+  TaggingInterface(const MooseObject * moose_object, bool initialize = true);
+
   virtual ~TaggingInterface();
 
   static InputParameters validParams();

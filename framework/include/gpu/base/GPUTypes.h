@@ -157,3 +157,18 @@ operator-(Real3 left, Real3 right)
   return {left.x - right.x, left.y - right.y, left.z - right.z};
 }
 #endif
+
+template <typename T1, typename T2>
+struct GPUPair
+{
+  T1 first;
+  T2 second;
+};
+
+template <typename T1, typename T2, typename T3>
+struct GPUTuple
+{
+  T1 first;
+  T2 second;
+  T3 third;
+};

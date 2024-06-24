@@ -6049,6 +6049,11 @@ FEProblemBase::init()
   if (_displaced_problem)
     _displaced_problem->init();
 
+#ifdef MOOSE_HAVE_GPU
+  if (_have_GPU_objects)
+    initGPU();
+#endif
+
   _initialized = true;
 }
 

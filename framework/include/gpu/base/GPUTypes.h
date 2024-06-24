@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "GPUScalar.h"
 #include "GPUArray.h"
 
 #include "MooseError.h"

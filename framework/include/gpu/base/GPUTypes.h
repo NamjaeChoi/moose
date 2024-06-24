@@ -14,6 +14,7 @@
 #include "GPUArray.h"
 #include "GPUVector.h"
 #include "GPUMatrix.h"
+#include "GPUVariable.h"
 
 #include "MooseError.h"
 #include "MooseUtils.h"

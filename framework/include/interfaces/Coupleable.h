@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifdef MOOSE_GPU_SCOPE
+#include "GPUTypes.h"
+#endif
+
 #include <unordered_map>
 #include "MooseTypes.h"
 #include "MooseArray.h"
@@ -1753,6 +1757,15 @@ private:
 
   /// keep a set of allocated writable variable references to make sure only one object can obtain them per thread
   std::vector<std::set<MooseWritableVariable *>> _writable_coupled_variables;
+
+  /**
+   * GPU-related variables and methods
+   */
+#ifdef MOOSE_GPU_SCOPE
+public:
+  GPUVariable coupledGPUVar(const std::string & var_name);
+  GPUVariable coupledGPUTagVar(const std::string & var_name, const std::string & tag_name);
+#endif
 };
 
 template <typename T>

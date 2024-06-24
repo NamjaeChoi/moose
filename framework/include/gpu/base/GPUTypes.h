@@ -12,6 +12,8 @@
 #include "GPUThread.h"
 #include "GPUScalar.h"
 #include "GPUArray.h"
+#include "GPUVector.h"
+#include "GPUMatrix.h"
 
 #include "MooseError.h"
 #include "MooseUtils.h"

@@ -1118,6 +1118,59 @@ public:
   std::set<dof_id_type> getElemIDsOnBlocks(unsigned int elem_id_index,
                                            const std::set<SubdomainID> & blks) const;
 
+  /**
+   * Get GPU subdomain ID of a subdomain (local to each process)
+   */
+  SubdomainID getGPUSubdomainID(const SubdomainID subdomain) const;
+
+  /**
+   * Get GPU element type ID of an element pointer (local to each process)
+   */
+  unsigned int getGPUElementTypeID(const Elem * elem) const;
+
+  /**
+   * Get GPU element ID of an element pointer (local to each process)
+   */
+  dof_id_type getGPUElementID(const Elem * elem) const;
+
+  /**
+   * Get GPU subdomain-local element ID of an element pointer (local to each process)
+   */
+  dof_id_type getGPUSubdomainLocalElementID(const Elem * elem) const;
+
+  /**
+   * Get element type to GPU element type ID map (local to each process)
+   */
+  const auto & getGPUElementTypeMap() const { return _GPU_elem_type_id_mapping; }
+
+  /**
+   * Get element pointer to GPU local element ID map (local to each process)
+   */
+  const auto & getGPULocalElementMap() const { return _GPU_local_elem_id_mapping; }
+
+  /**
+   * Get element pointer to GPU subdomain-local element ID map (local to each process)
+   */
+  const auto & getGPUSubdomainLocalElementMap(const SubdomainID subdomain) const
+  {
+    return _GPU_subdomain_local_elem_id_mapping.at(subdomain);
+  }
+
+  /**
+   * Get GPU node ID of a node pointer (local to each process)
+   */
+  dof_id_type getGPUNodeID(const Node * node) const;
+
+  /**
+   * Get node pointer to GPU local node ID map (local to each process)
+   */
+  const auto & getGPULocalNodeMap() const { return _GPU_local_node_id_mapping; }
+
+  /**
+   * Get the maximum number of sides per element
+   */
+  unsigned int getMaxSidesPerElem() const { return _max_sides_per_elem; }
+
   std::unordered_map<dof_id_type, std::set<dof_id_type>>
   getElemIDMapping(const std::string & from_id_name, const std::string & to_id_name) const;
 
@@ -1791,11 +1844,31 @@ private:
   /// Flags to indicate whether or not any two extra element integers are the same
   std::vector<std::vector<bool>> _id_identical_flag;
 
+  /// Map from subdomain to serialized GPU subdomain ID (local to each process)
+  std::map<SubdomainID, SubdomainID> _GPU_subdomain_id_mapping;
+  /// Map from element type to serialized GPU element type ID (local to each process)
+  std::map<ElemType, unsigned int> _GPU_elem_type_id_mapping;
+  /// Map from element pointer to serialized GPU local element ID (local to each process)
+  std::map<const Elem *, dof_id_type> _GPU_local_elem_id_mapping;
+  /// Map from element pointer to serialized GPU subdomain-local element ID
+  std::map<SubdomainID, std::map<const Elem *, dof_id_type>> _GPU_subdomain_local_elem_id_mapping;
+  /// Map from node pointer to serialized GPU local node ID (local to each process)
+  std::map<const Node *, dof_id_type> _GPU_local_node_id_mapping;
+
+  /// The maximum number of sides per element
+  unsigned int _max_sides_per_elem;
+
+  /// Compute the maximum number of sides per element
+  void computeMaxSidesPerElem();
+
   /// Whether this mesh is displaced
   bool _is_displaced;
 
   /// Build extra data for faster access to the information of extra element integers
   void buildElemIDInfo();
+
+  /// Build ID maps for GPUs
+  void buildGPUIDMap();
 
   /// Build lower-d mesh for all sides
   void buildLowerDMesh();

@@ -608,6 +608,9 @@ MooseMesh::update()
   cacheInfo();
   buildElemIDInfo();
 
+  if (_app.hasGPUs())
+    buildGPUIDMap();
+
   _finite_volume_info_dirty = true;
 }
 
@@ -968,6 +971,19 @@ MooseMesh::buildNodeList()
 }
 
 void
+MooseMesh::computeMaxSidesPerElem()
+{
+  auto & mesh = getMesh();
+
+  _max_sides_per_elem = 0;
+
+  for (auto & elem : as_range(mesh.local_elements_begin(), mesh.local_elements_end()))
+    _max_sides_per_elem = std::max(_max_sides_per_elem, elem->n_sides());
+  
+  mesh.comm().max(_max_sides_per_elem);
+}
+
+void
 MooseMesh::buildElemIDInfo()
 {
   unsigned int n = getMesh().n_elem_integers() + 1;
@@ -1006,6 +1022,36 @@ MooseMesh::buildElemIDInfo()
   }
   comm().max(_max_ids);
   comm().min(_min_ids);
+}
+
+void
+MooseMesh::buildGPUIDMap()
+{
+  _GPU_subdomain_id_mapping.clear();
+  _GPU_elem_type_id_mapping.clear();
+  _GPU_local_elem_id_mapping.clear();
+  _GPU_local_node_id_mapping.clear();
+
+  for (auto subdomain : meshSubdomains())
+  {
+    _GPU_subdomain_id_mapping[subdomain] = _GPU_subdomain_id_mapping.size();
+    _GPU_subdomain_local_elem_id_mapping[subdomain];
+
+    dof_id_type subdomain_local_id = 0;
+
+    for (const auto elem : getMesh().active_local_subdomain_elements_ptr_range(subdomain))
+    {
+      if (!_GPU_elem_type_id_mapping.count(elem->type()))
+        _GPU_elem_type_id_mapping[elem->type()] = _GPU_elem_type_id_mapping.size();
+
+      _GPU_local_elem_id_mapping[elem] = _GPU_local_elem_id_mapping.size();
+      _GPU_subdomain_local_elem_id_mapping[subdomain][elem] = subdomain_local_id++;
+
+      for (const auto & node : elem->node_ref_range())
+        if (!_GPU_local_node_id_mapping.count(&node))
+          _GPU_local_node_id_mapping[&node] = _GPU_local_node_id_mapping.size();
+    }
+  }
 }
 
 std::unordered_map<dof_id_type, std::set<dof_id_type>>
@@ -1061,6 +1107,59 @@ MooseMesh::getElemIDsOnBlocks(unsigned int elem_id_index, const std::set<Subdoma
       unique_ids.insert(mid);
   }
   return unique_ids;
+}
+
+SubdomainID
+MooseMesh::getGPUSubdomainID(const SubdomainID subdomain) const
+{
+  if (!_GPU_subdomain_id_mapping.count(subdomain))
+    mooseError("Subdomain ", subdomain, " does not have GPU subdomain ID");
+
+  return _GPU_subdomain_id_mapping.at(subdomain);
+}
+
+unsigned int
+MooseMesh::getGPUElementTypeID(const Elem * elem) const
+{
+  mooseAssert(elem, "Element pointer is null");
+
+  if (!_GPU_elem_type_id_mapping.count(elem->type()))
+    mooseError("Element type ", elem->type(), " does not have GPU element type ID");
+
+  return _GPU_elem_type_id_mapping.at(elem->type());
+}
+
+dof_id_type
+MooseMesh::getGPUElementID(const Elem * elem) const
+{
+  mooseAssert(elem, "Element pointer is null");
+
+  if (!_GPU_local_elem_id_mapping.count(elem))
+    mooseError("Element ", elem->id(), " does not have GPU element ID");
+
+  return _GPU_local_elem_id_mapping.at(elem);
+}
+
+dof_id_type
+MooseMesh::getGPUSubdomainLocalElementID(const Elem * elem) const
+{
+  mooseAssert(elem, "Element pointer is null");
+
+  if (!_GPU_subdomain_local_elem_id_mapping.at(elem->subdomain_id()).count(elem))
+    mooseError("Element ", elem->id(), " does not have GPU element ID");
+
+  return _GPU_subdomain_local_elem_id_mapping.at(elem->subdomain_id()).at(elem);
+}
+
+dof_id_type
+MooseMesh::getGPUNodeID(const Node * node) const
+{
+  mooseAssert(node, "Node pointer is null");
+
+  if (!_GPU_local_node_id_mapping.count(node))
+    mooseError("Node ", node->id(), " does not have GPU node ID");
+
+  return _GPU_local_node_id_mapping.at(node);
 }
 
 void
@@ -2783,6 +2882,8 @@ MooseMesh::init()
     if (getParam<bool>("build_all_side_lowerd_mesh"))
       buildLowerDMesh();
   }
+
+  computeMaxSidesPerElem();
 }
 
 unsigned int

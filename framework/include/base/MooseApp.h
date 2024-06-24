@@ -1503,6 +1503,26 @@ private:
   friend class FEProblemBase;
   friend class Restartable;
   friend class SubProblem;
+
+  /**
+   * GPU-related variables and methods
+   */
+public:
+  /// Return the number of GPUs in this node
+  unsigned int numGPUs() { return _num_GPUs; }
+  bool hasGPUs() { return _num_GPUs > 0; }
+
+private:
+  /// The number of local GPUs
+  unsigned int _num_GPUs = 0;
+
+  /// The current local GPU ID
+  processor_id_type _my_GPU_id = Moose::INVALID_PROCESSOR_ID;
+
+#ifdef MOOSE_HAVE_GPU
+  /// Initialize the GPU environment
+  void initializeGPUs();
+#endif
 };
 
 template <typename T>

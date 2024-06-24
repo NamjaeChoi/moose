@@ -658,6 +658,10 @@ MooseApp::MooseApp(InputParameters parameters)
                     " to remove this deprecation warning.");
 
   Moose::out << std::flush;
+
+#ifdef MOOSE_HAVE_GPU
+  initializeGPUs();
+#endif
 }
 
 MooseApp::~MooseApp()

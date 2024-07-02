@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifdef MOOSE_HAVE_GPU
+#include "GPUMaterialProperty.h"
+#endif
+
 #include "MaterialProperty.h"
 #include "Moose.h"
 #include "MooseUtils.h"
@@ -98,6 +102,19 @@ public:
     return haveGenericProperty<T, true>(prop_name);
   }
 
+#ifdef MOOSE_GPU_SCOPE
+  /// Returns true if the GPU material property exists - defined by any material.
+  template <typename T, unsigned int dimension>
+  bool haveGPUProperty(const std::string & prop_name) const
+  {
+    if (!haveGPUPropertyHelper(prop_name))
+      return false;
+
+    auto & prop = getGPUPropertyHelper(prop_name, 0);
+    return dynamic_cast<GPUMaterialProperty<T, dimension> *>(&prop) != nullptr;
+  }
+#endif
+
   /**
    * Retrieves a material property
    * @tparam T The type of the property
@@ -128,6 +145,69 @@ public:
   {
     return getPropertyHelper<T, is_ad, true>(prop_name, 0, requestor);
   }
+
+#ifdef MOOSE_GPU_SCOPE
+  template <typename T, unsigned int dimension>
+  GPUMaterialProperty<T, dimension> getGPUProperty(const std::string & prop_name,
+                                                   const unsigned int state,
+                                                   const MooseObject & requestor)
+  {
+    if (!haveGPUProperty<T, dimension>(prop_name))
+      mooseError("The requested ",
+                 dimension,
+                 "-dimension GPU material property '",
+                 prop_name,
+                 "' of type '",
+                 MooseUtils::prettyCppType<T>(),
+                 "'\nwas not declared.");
+
+    auto & prop_base = getGPUPropertyHelper(prop_name, state);
+    auto prop_cast = dynamic_cast<GPUMaterialProperty<T, dimension> *>(&prop_base);
+
+    if (!prop_cast)
+      mooseError("The requested ",
+                 dimension,
+                 "-dimension GPU material property '",
+                 prop_name,
+                 "' of type '",
+                 MooseUtils::prettyCppType<T>(),
+                 "'\nwas already declared as a ",
+                 prop_base.dim(),
+                 "-dimension GPU material property of type '",
+                 prop_base.type(),
+                 "'.");
+
+    return prop_cast->mirror();
+  }
+
+  template <typename T, unsigned int dimension>
+  GPUMaterialProperty<T, dimension> declareGPUProperty(const std::string & prop_name,
+                                                       const std::vector<unsigned int> & dims,
+                                                       const MooseObject & requestor,
+                                                       const bool bnd)
+  {
+    auto shell = std::make_shared<GPUMaterialProperty<T, dimension>>();
+
+    auto & prop_base = addGPUPropertyHelper(
+        prop_name, typeid(T), 0, &castRequestorToDeclarer(requestor), dims, shell, bnd);
+    auto prop_cast = dynamic_cast<GPUMaterialProperty<T, dimension> *>(&prop_base);
+
+    if (!prop_cast)
+      mooseError("The declared ",
+                 dimension,
+                 "-dimension GPU material property '",
+                 prop_name,
+                 "' of type '",
+                 MooseUtils::prettyCppType<T>(),
+                 "'\nwas already declared as a ",
+                 prop_base.dim(),
+                 "-dimension GPU material property of type '",
+                 prop_base.type(),
+                 "'.");
+
+    return prop_cast->mirror();
+  }
+#endif
 
   /**
    * Returns true if the stateful material is in a swapped state.
@@ -215,6 +295,21 @@ private:
   GenericMaterialProperty<T, is_ad> & getPropertyHelper(const std::string & prop_name,
                                                         const unsigned int state,
                                                         const MooseObject & requestor);
+
+#ifdef MOOSE_HAVE_GPU
+  GPUMaterialPropertyBase & addGPUPropertyHelper(const std::string & prop_name,
+                                                 const std::type_info & type,
+                                                 const unsigned int state,
+                                                 const MaterialBase * const declarer,
+                                                 const std::vector<unsigned int> & dims,
+                                                 std::shared_ptr<GPUMaterialPropertyBase> shell,
+                                                 const bool bnd) const;
+
+  GPUMaterialPropertyBase & getGPUPropertyHelper(const std::string & prop_name,
+                                                 const unsigned int state) const;
+
+  bool haveGPUPropertyHelper(const std::string & prop_name) const;
+#endif
 
   static void mooseErrorHelper(const MooseObject & object, const std::string_view & error);
 

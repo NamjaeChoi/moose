@@ -12,6 +12,7 @@
 #include "GPUTypes.h"
 #include "GPUAssembly.h"
 #include "GPUSystem.h"
+#include "GPUMaterialProperty.h"
 
 class Datum
 {
@@ -84,6 +85,20 @@ public:
     }
     else
       return var.value(comp);
+  }
+
+  // Material property
+  template <typename T, unsigned int dimension>
+  KOKKOS_FUNCTION const GPUProperty<T, dimension>
+  getProperty(const GPUMaterialProperty<T, dimension> & prop, const unsigned int qp) const
+  {
+    return GPUProperty<T, dimension>(prop, _elem.subdomain, _qp_offset + qp);
+  }
+  template <typename T, unsigned int dimension>
+  KOKKOS_FUNCTION GPUProperty<T, dimension>
+  setProperty(const GPUMaterialProperty<T, dimension> & prop, const unsigned int qp) const
+  {
+    return GPUProperty<T, dimension>(prop, _elem.subdomain, _qp_offset + qp);
   }
 
   // Assembly

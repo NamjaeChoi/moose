@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifdef MOOSE_HAVE_GPU
+#include "GPUMaterialPropertyStorage.h"
+#endif
+
 // MOOSE includes
 #include "MaterialProperty.h"
 #include "MooseTypes.h"
@@ -98,6 +102,9 @@ public:
   const MaterialProperty<T> & getMaterialProperty(const std::string & name,
                                                   const unsigned int state = 0)
   {
+    if (_is_gpu_object)
+      mooseError("Use getGPUMaterialProperty() instead of getMaterialProperty() for a GPU object.");
+
     return getGenericMaterialProperty<T, false>(name, state);
   }
   template <typename T>
@@ -108,13 +115,69 @@ public:
   template <typename T>
   const MaterialProperty<T> & getMaterialPropertyOld(const std::string & name)
   {
+    if (_is_gpu_object)
+      mooseError(
+          "Use getGPUMaterialPropertyOld() instead of getMaterialPropertyOld() for a GPU object.");
+
     return getMaterialProperty<T>(name, 1);
   }
   template <typename T>
   const MaterialProperty<T> & getMaterialPropertyOlder(const std::string & name)
   {
+    if (_is_gpu_object)
+      mooseError("Use getGPUMaterialPropertyOlder() instead of getMaterialPropertyOlder() for a "
+                 "GPU object.");
+
     return getMaterialProperty<T>(name, 2);
   }
+
+#ifdef MOOSE_GPU_SCOPE
+  template <typename T, unsigned int dimension = 0>
+  GPUMaterialProperty<T, dimension> getGPUMaterialProperty(const std::string & name,
+                                                           const unsigned int state = 0)
+  {
+    if (!_is_gpu_object)
+      mooseError("getGPUMaterialProperty() should not be called for a non-GPU object.");
+
+    const auto prop_name = getMaterialPropertyName(name);
+
+    if constexpr (std::is_same_v<T, Real>)
+    {
+      std::istringstream ss(prop_name);
+      Real value;
+
+      // check if the string parsed cleanly into a Real number
+      if (ss >> value && ss.eof())
+        return GPUMaterialProperty<T, dimension>(value);
+    }
+
+    checkExecutionStage();
+    checkMaterialProperty(prop_name, state);
+    markMatPropRequested(prop_name);
+
+    _get_material_property_called = true;
+
+    _material_property_dependencies.insert(_material_data.getPropertyId(prop_name));
+
+    return _material_data.getGPUProperty<T, dimension>(prop_name, state, _mi_moose_object);
+  }
+  template <typename T, unsigned int dimension = 0>
+  GPUMaterialProperty<T, dimension> getGPUMaterialPropertyOld(const std::string & name)
+  {
+    if (!_is_gpu_object)
+      mooseError("getGPUMaterialPropertyOld() should not be called for a non-GPU object.");
+
+    return getGPUMaterialProperty<T, dimension>(name, 1);
+  }
+  template <typename T, unsigned int dimension = 0>
+  GPUMaterialProperty<T, dimension> getGPUMaterialPropertyOlder(const std::string & name)
+  {
+    if (!_is_gpu_object)
+      mooseError("getGPUMaterialPropertyOlder() should not be called for a non-GPU object.");
+
+    return getGPUMaterialProperty<T, dimension>(name, 2);
+  }
+#endif
   ///@}
 
   ///@{
@@ -287,6 +350,12 @@ public:
   bool hasADMaterialProperty(const std::string & name);
   template <typename T>
   bool hasADMaterialPropertyByName(const std::string & name);
+#ifdef MOOSE_GPU_SCOPE
+  template <typename T, unsigned int dimension = 0>
+  bool hasGPUMaterialProperty(const std::string & name);
+  template <typename T, unsigned int dimension = 0>
+  bool hasGPUMaterialPropertyByName(const std::string & name);
+#endif
   ///@}
 
   ///@{ generic hasMaterialProperty helper
@@ -474,6 +543,9 @@ protected:
 
   /// Current threaded it
   const THREAD_ID _mi_tid;
+
+  /// Whether the MOOSE object is a GPU object
+  const bool _is_gpu_object;
 
   /// The type of data
   const Moose::MaterialDataType _material_data_type;
@@ -691,6 +763,27 @@ MaterialPropertyInterface::hasMaterialPropertyByName(const std::string & name_in
                         : MooseUtils::join(std::vector<std::string>({name_in, _get_suffix}), "_");
   return _material_data.haveProperty<T>(name);
 }
+
+#ifdef MOOSE_GPU_SCOPE
+template <typename T, unsigned int dimension>
+bool
+MaterialPropertyInterface::hasGPUMaterialProperty(const std::string & name)
+{
+  // Check if the supplied parameter is a valid input parameter key
+  const auto prop_name = getMaterialPropertyName(name);
+  return hasGPUMaterialPropertyByName<T, dimension>(prop_name);
+}
+
+template <typename T, unsigned int dimension>
+bool
+MaterialPropertyInterface::hasGPUMaterialPropertyByName(const std::string & name_in)
+{
+  const auto name = _get_suffix.empty()
+                        ? name_in
+                        : MooseUtils::join(std::vector<std::string>({name_in, _get_suffix}), "_");
+  return _material_data.haveGPUProperty<T, dimension>(name);
+}
+#endif
 
 template <typename T, bool is_ad>
 const GenericMaterialProperty<T, is_ad> &

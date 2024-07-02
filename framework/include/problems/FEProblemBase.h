@@ -62,6 +62,7 @@ class RandomData;
 class MeshChangedInterface;
 class MultiMooseEnum;
 class MaterialPropertyStorage;
+class GPUMaterialPropertyStorage;
 class MaterialData;
 class MooseEnum;
 class Assembly;
@@ -1674,6 +1675,18 @@ public:
   {
     return _neighbor_material_props;
   }
+
+#ifdef MOOSE_HAVE_GPU
+  GPUMaterialPropertyStorage & getGPUMaterialPropertyStorage() { return _gpu_material_props; }
+  GPUMaterialPropertyStorage & getGPUBndMaterialPropertyStorage()
+  {
+    return _gpu_bnd_material_props;
+  }
+  GPUMaterialPropertyStorage & getGPUNeighborMaterialPropertyStorage()
+  {
+    return _gpu_neighbor_material_props;
+  }
+#endif
   ///@}
 
   /**
@@ -1892,7 +1905,8 @@ public:
   /*
    * @return The MaterialData for the type \p type for thread \p tid
    */
-  MaterialData & getMaterialData(Moose::MaterialDataType type, const THREAD_ID tid = 0);
+  MaterialData &
+  getMaterialData(Moose::MaterialDataType type, const THREAD_ID tid = 0, bool is_gpu = false);
 
   /**
    * Will return True if the user wants to get an error when
@@ -2570,6 +2584,11 @@ protected:
   MaterialPropertyStorage & _bnd_material_props;
   MaterialPropertyStorage & _neighbor_material_props;
 
+#ifdef MOOSE_HAVE_GPU
+  GPUMaterialPropertyStorage & _gpu_material_props;
+  GPUMaterialPropertyStorage & _gpu_bnd_material_props;
+  GPUMaterialPropertyStorage & _gpu_neighbor_material_props;
+#endif
   ///@{
   // Material Warehouses
   MaterialWarehouse _materials;           // regular materials

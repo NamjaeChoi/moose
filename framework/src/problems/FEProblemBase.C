@@ -7,6 +7,10 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
+#ifdef MOOSE_HAVE_GPU
+#include "GPUMaterialPropertyStorage.h"
+#endif
+
 #include "FEProblemBase.h"
 #include "AuxiliarySystem.h"
 #include "MaterialPropertyStorage.h"
@@ -397,11 +401,19 @@ FEProblemBase::FEProblemBase(const InputParameters & parameters)
     _coupling(Moose::COUPLING_DIAG),
     _mesh_divisions(/*threaded=*/true),
     _material_props(declareRestartableDataWithContext<MaterialPropertyStorage>(
-        "material_props", &_mesh, _material_prop_registry)),
+        "material_props", &_mesh, _material_prop_registry, *this)),
     _bnd_material_props(declareRestartableDataWithContext<MaterialPropertyStorage>(
-        "bnd_material_props", &_mesh, _material_prop_registry)),
+        "bnd_material_props", &_mesh, _material_prop_registry, *this)),
     _neighbor_material_props(declareRestartableDataWithContext<MaterialPropertyStorage>(
-        "neighbor_material_props", &_mesh, _material_prop_registry)),
+        "neighbor_material_props", &_mesh, _material_prop_registry, *this)),
+#ifdef MOOSE_HAVE_GPU
+    _gpu_material_props(declareRestartableDataWithContext<GPUMaterialPropertyStorage>(
+        "gpu_material_props", &_mesh, _material_prop_registry, *this)),
+    _gpu_bnd_material_props(declareRestartableDataWithContext<GPUMaterialPropertyStorage>(
+        "gpu_bnd_material_props", &_mesh, _material_prop_registry, *this)),
+    _gpu_neighbor_material_props(declareRestartableDataWithContext<GPUMaterialPropertyStorage>(
+        "gpu_neighbor_material_props", &_mesh, _material_prop_registry, *this)),
+#endif
     _reporter_data(_app),
     // TODO: delete the following line after apps have been updated to not call getUserObjects
     _all_user_objects(_app.getExecuteOnEnum()),
@@ -3672,8 +3684,26 @@ FEProblemBase::getMaterial(std::string name,
 }
 
 MaterialData &
-FEProblemBase::getMaterialData(Moose::MaterialDataType type, const THREAD_ID tid)
+FEProblemBase::getMaterialData(Moose::MaterialDataType type, const THREAD_ID tid, bool is_gpu)
 {
+  if (is_gpu)
+#ifdef MOOSE_HAVE_GPU
+    switch (type)
+    {
+      case Moose::BLOCK_MATERIAL_DATA:
+        return _gpu_material_props.getMaterialData(tid);
+      case Moose::NEIGHBOR_MATERIAL_DATA:
+        return _gpu_neighbor_material_props.getMaterialData(tid);
+      case Moose::BOUNDARY_MATERIAL_DATA:
+      case Moose::FACE_MATERIAL_DATA:
+      case Moose::INTERFACE_MATERIAL_DATA:
+        return _gpu_bnd_material_props.getMaterialData(tid);
+    }
+#else
+    mooseError("FEProblemBase::getMaterialData(): Attempted to get GPU material data but MOOSE was "
+               "not compiled with GPU support.");
+#endif
+
   switch (type)
   {
     case Moose::BLOCK_MATERIAL_DATA:

@@ -84,6 +84,15 @@ public:
 
   MaterialBase(const InputParameters & parameters);
 
+#ifdef MOOSE_GPU_SCOPE
+  /**
+   * Class copy constructor
+   * Used for dispatching GPU parallel calculation.
+   * Only defined for GPU objects.
+   */
+  MaterialBase(const MaterialBase & object);
+#endif
+
   /**
    * Initialize stateful properties (if material has some)
    *
@@ -373,10 +382,10 @@ protected:
 
   const FaceInfo * _face_info = nullptr;
 
-private:
   /// Suffix to append to the name of the material property/ies when declaring it/them
   const MaterialPropertyName _declare_suffix;
 
+private:
   /// Whether or not to force stateful init; see forceStatefulInit()
   const bool _force_stateful_init;
 

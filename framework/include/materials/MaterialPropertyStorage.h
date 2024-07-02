@@ -19,6 +19,7 @@
 #include <variant>
 
 // Forward declarations
+class FEProblemBase;
 class MaterialBase;
 class QpMap;
 
@@ -42,7 +43,7 @@ void dataLoad(std::istream & stream, MaterialPropertyStorage & storage, void * c
 class MaterialPropertyStorage
 {
 public:
-  MaterialPropertyStorage(MaterialPropertyRegistry & registry);
+  MaterialPropertyStorage(MaterialPropertyRegistry & registry, FEProblemBase & problem);
 
   /**
    * Basic structure for storing information about a property
@@ -357,6 +358,9 @@ public:
   bool isRestoredProperty(const std::string & name) const;
 
 protected:
+  /// Reference to the problem
+  FEProblemBase & _problem;
+
   /// The actual storage
   std::array<PropsType, MaterialData::max_state + 1> _storage;
 

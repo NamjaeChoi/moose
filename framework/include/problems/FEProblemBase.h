@@ -825,6 +825,14 @@ public:
   virtual void addHDGIntegratedBC(const std::string & kernel_name,
                                   const std::string & name,
                                   InputParameters & parameters);
+
+  virtual void addGPUKernel(const std::string & kernel_name,
+                            const std::string & name,
+                            InputParameters & parameters);
+  virtual void addGPUBoundaryCondition(const std::string & bc_name,
+                                       const std::string & name,
+                                       InputParameters & parameters);
+
   virtual void
   addConstraint(const std::string & c_name, const std::string & name, InputParameters & parameters);
 
@@ -2394,6 +2402,8 @@ public:
    */
   const std::vector<NonlinearSystemName> & getNonlinearSystemNames() const { return _nl_sys_names; }
 
+  bool hasGPUObjects() { return _have_GPU_objects; }
+
 protected:
   /// Create extra tagged vectors and matrices
   void createTagVectors();
@@ -2945,6 +2955,9 @@ private:
   /// If we catch an exception during residual/Jacobian evaluaton for which we don't have specific
   /// handling, immediately error instead of allowing the time step to be cut
   const bool _regard_general_exceptions_as_errors;
+
+  /// Whether we have any GPU objects
+  bool _have_GPU_objects = false;
 
   friend void Moose::PetscSupport::setSinglePetscOption(const std::string & name,
                                                         const std::string & value,

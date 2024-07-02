@@ -1,0 +1,28 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include "GPUResidualObject.h"
+
+#include "BoundaryRestrictable.h"
+#include "DistributionInterface.h"
+#include "GeometricSearchInterface.h"
+
+#pragma once
+
+class GPUBoundaryCondition : public GPUResidualObject,
+                             public BoundaryRestrictable,
+                             public DistributionInterface,
+                             public GeometricSearchInterface
+{
+public:
+  static InputParameters validParams();
+
+  GPUBoundaryCondition(const InputParameters & parameters, bool nodal);
+  GPUBoundaryCondition(const GPUBoundaryCondition & object);
+};

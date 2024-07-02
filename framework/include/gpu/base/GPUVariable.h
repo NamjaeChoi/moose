@@ -14,10 +14,12 @@
 #include "MooseTypes.h"
 
 class Coupleable;
+class GPUResidualObject;
 
 class GPUVariable
 {
   friend class Coupleable;
+  friend class GPUResidualObject;
 
 private:
   // Whether this variable was coupled

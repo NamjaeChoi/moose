@@ -1014,6 +1014,11 @@ public:
   void
   reinitMaterialsInterface(BoundaryID boundary_id, const THREAD_ID tid, bool swap_stateful = true);
 
+#ifdef MOOSE_HAVE_GPU
+  void prepareGPUMaterials(const std::unordered_set<unsigned int> & consumer_needed_mat_props);
+  void reinitGPUMaterials();
+#endif
+
   /*
    * Swap back underlying data storing stateful material properties
    */

@@ -44,3 +44,30 @@ FEProblemBase::initGPU()
   auto & aux = getAuxiliarySystem();
   _gpu_systems[aux.number()].init(aux, _gpu_assembly);
 }
+
+void
+FEProblemBase::prepareGPUMaterials(
+    const std::unordered_set<unsigned int> & consumer_needed_mat_props)
+{
+  std::unordered_set<unsigned int> needed_mat_props;
+
+  for (auto block : mesh().meshSubdomains())
+    _gpu_materials.updateBlockMatPropDependency(block, needed_mat_props);
+
+  for (auto boundary : mesh().meshBoundaryIds())
+    _gpu_materials.updateBoundaryMatPropDependency(boundary, needed_mat_props);
+
+  needed_mat_props.insert(consumer_needed_mat_props.begin(), consumer_needed_mat_props.end());
+
+  setActiveMaterialProperties(needed_mat_props, 0);
+}
+
+void
+FEProblemBase::reinitGPUMaterials()
+{
+  if (hasActiveMaterialProperties(0))
+    for (auto & material : _gpu_materials.getActiveObjects())
+      material->computeProperties();
+
+  Kokkos::fence();
+}

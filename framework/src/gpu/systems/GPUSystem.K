@@ -8,6 +8,7 @@
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
 #include "GPUSystem.h"
+#include "GPUNodalBCBase.h"
 
 #include "MooseMesh.h"
 #include "Assembly.h"
@@ -227,6 +228,92 @@ GPUSystem::setupSparsity()
 }
 
 void
+GPUSystem::checkNodalBCs()
+{
+  auto nl_system = static_cast<NonlinearSystemBase *>(_system);
+
+  _nbc_residual_dof.create(MAX_TAG);
+  _nbc_matrix_dof.create(MAX_TAG);
+
+  for (auto vector_tag : _system->feProblem().getVectorTags())
+  {
+    auto tag = vector_tag._id;
+
+    for (auto bc :
+         nl_system->getGPUNodalBCWarehouse().getVectorTagObjectWarehouse(tag, 0).getObjects())
+    {
+      auto nbc = static_cast<GPUNodalBCBase *>(bc.get());
+      auto var = nbc->variable().number();
+
+      if (!_nbc_residual_dof[tag].isAlloc())
+      {
+        _nbc_residual_dof[tag].create(_n_local_dofs + _n_ghost_dofs);
+        _nbc_residual_dof[tag] = false;
+      }
+
+      for (auto node : nbc->getNodes())
+        _nbc_residual_dof[tag][_local_node_dof_index[var][node]] = true;
+
+      // Let remote processes know about ghost DOFs associated with nodal BCs not to compute
+      // residual on them
+
+      std::vector<std::vector<char>> send(_n_procs), recv(_n_procs);
+
+      for (processor_id_type proc = 0; proc < _n_procs; proc++)
+        for (auto dof : _local_comm_list[proc])
+          send[proc].push_back(_nbc_residual_dof[tag][dof]);
+
+      for (processor_id_type proc = 0; proc < _n_procs; proc++)
+        _comm->scatter(send, recv[proc], proc);
+
+      for (processor_id_type proc = 0; proc < _n_procs; proc++)
+        for (dof_id_type i = 0; i < _ghost_comm_list[proc].size(); ++i)
+          _nbc_residual_dof[tag][_ghost_comm_list[proc][i]] = recv[proc][i];
+    }
+  }
+
+  for (auto matrix_tag : _system->feProblem().getMatrixTags())
+  {
+    auto tag = matrix_tag.second;
+
+    for (auto bc :
+         nl_system->getGPUNodalBCWarehouse().getMatrixTagObjectWarehouse(tag, 0).getObjects())
+    {
+      auto nbc = static_cast<GPUNodalBCBase *>(bc.get());
+      auto var = nbc->variable().number();
+
+      if (!_nbc_matrix_dof[tag].isAlloc())
+      {
+        _nbc_matrix_dof[tag].create(_n_local_dofs + _n_ghost_dofs);
+        _nbc_matrix_dof[tag] = false;
+      }
+
+      for (auto node : nbc->getNodes())
+        _nbc_matrix_dof[tag][_local_node_dof_index[var][node]] = true;
+
+      // Let remote processes know about ghost DOFs associated with nodal BCs not to compute
+      // Jacobian on them
+
+      std::vector<std::vector<char>> send(_n_procs), recv(_n_procs);
+
+      for (processor_id_type proc = 0; proc < _n_procs; proc++)
+        for (auto dof : _local_comm_list[proc])
+          send[proc].push_back(_nbc_matrix_dof[tag][dof]);
+
+      for (processor_id_type proc = 0; proc < _n_procs; proc++)
+        _comm->scatter(send, recv[proc], proc);
+
+      for (processor_id_type proc = 0; proc < _n_procs; proc++)
+        for (dof_id_type i = 0; i < _ghost_comm_list[proc].size(); ++i)
+          _nbc_matrix_dof[tag][_ghost_comm_list[proc][i]] = recv[proc][i];
+    }
+  }
+
+  _nbc_residual_dof.copyNested();
+  _nbc_matrix_dof.copyNested();
+}
+
+void
 GPUSystem::init(SystemBase & system, const GPUAssembly & gpu_assembly)
 {
   _gpu_assembly = gpu_assembly;
@@ -237,7 +324,10 @@ GPUSystem::init(SystemBase & system, const GPUAssembly & gpu_assembly)
   setupDofs();
 
   if (dynamic_cast<NonlinearSystemBase *>(_system))
+  {
     setupSparsity();
+    checkNodalBCs();
+  }
 
   _qp_solutions.create(MAX_TAG);
   _qp_solutions_grad.create(MAX_TAG);

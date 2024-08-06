@@ -88,7 +88,7 @@ protected:
     {
       auto tag = _vector_tags[t];
 
-      if (system.isResidualTagActive(tag))
+      if (system.isResidualTagActive(tag) && !system.hasNodalResidual(dof, tag))
         Kokkos::atomic_add(&system.getVectorDofValue(dof, tag), local_re);
     }
   }
@@ -129,7 +129,7 @@ protected:
     {
       auto tag = _matrix_tags[t];
 
-      if (system.isMatrixTagActive(tag))
+      if (system.isMatrixTagActive(tag) && !system.hasNodalJacobian(row, tag))
         Kokkos::atomic_add(&system.getMatrixDofValue(row, col, tag), local_ke);
     }
   }

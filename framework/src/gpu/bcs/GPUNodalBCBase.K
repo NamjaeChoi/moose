@@ -28,3 +28,14 @@ GPUNodalBCBase::GPUNodalBCBase(const GPUNodalBCBase & object)
     CoupleableMooseVariableDependencyIntermediateInterface(&object, true, false, false)
 {
 }
+
+std::vector<dof_id_type>
+GPUNodalBCBase::getNodes()
+{
+  std::vector<dof_id_type> nodes;
+
+  for (unsigned int i = 0; i < numBoundaryNodes(); ++i)
+    nodes.push_back(boundaryNodeID(i));
+
+  return nodes;
+}

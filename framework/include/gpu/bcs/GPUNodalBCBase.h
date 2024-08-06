@@ -22,4 +22,6 @@ public:
 
   virtual bool preset() const { return false; }
   virtual void presetSolution(TagID tag) {}
+
+  std::vector<dof_id_type> getNodes();
 };

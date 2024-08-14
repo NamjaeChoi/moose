@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "GPUThread.h"
 #include "GPUScalar.h"
 #include "GPUArray.h"
 

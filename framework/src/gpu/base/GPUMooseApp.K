@@ -35,4 +35,23 @@ MooseApp::initializeGPUs()
   Kokkos::initialize(settings);
 
   std::atexit(Kokkos::finalize);
+
+#ifndef MOOSE_IGNORE_LIBCEED
+
+#ifdef KOKKOS_ENABLE_CUDA
+  const std::string device = "/gpu/cuda/gen:device_id=";
+#endif
+#ifdef KOKKOS_ENABLE_HIP
+  const std::string device = "/gpu/hip/gen:device_id=";
+#endif
+#ifdef KOKKOS_ENABLE_SYCL
+  const std::string device = "/gpu/sycl/shared:device_id=";
+#endif
+
+  CeedInit((device + std::to_string(_my_GPU_id)).c_str(), &_ceed);
+
+  for (auto include : LIBCEED_JIT_INCLUDE)
+    CeedAddJitSourceRoot(_ceed, include);
+
+#endif
 }

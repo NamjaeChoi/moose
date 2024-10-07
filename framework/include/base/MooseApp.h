@@ -49,6 +49,9 @@
 #include <typeindex>
 #include <filesystem>
 
+// libCEED header
+#include "CEEDHeader.h"
+
 // Forward declarations
 class Executioner;
 class Executor;
@@ -1521,12 +1524,22 @@ public:
   unsigned int numGPUs() { return _num_GPUs; }
   bool hasGPUs() { return _num_GPUs > 0; }
 
+#ifndef MOOSE_IGNORE_LIBCEED
+  /// Get the CEED logical device
+  Ceed getCeed() { return _ceed; }
+#endif
+
 private:
   /// The number of local GPUs
   unsigned int _num_GPUs = 0;
 
   /// The current local GPU ID
   processor_id_type _my_GPU_id = Moose::INVALID_PROCESSOR_ID;
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  /// CEED logical device
+  CEED _ceed;
+#endif
 
 #ifdef MOOSE_HAVE_GPU
   /// Initialize the GPU environment

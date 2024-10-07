@@ -40,7 +40,3 @@
 #ifdef KOKKOS_ENABLE_SYCL
 #define MemSpace Kokkos::Experimental::SYCL
 #endif
-
-// Predefined maximum values
-constexpr unsigned int MAX_TAG = 30;
-constexpr unsigned int MAX_DOF = 30;

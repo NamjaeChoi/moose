@@ -424,7 +424,7 @@ prebuild::
 	@-python3 $(FRAMEWORK_DIR)/../scripts/premake.py
 
 wasp_submodule_status $(moose_revision_header) $(moose_LIB): | prebuild
-moose: wasp_submodule_status $(moose_revision_header) $(moose_LIB)
+moose: wasp_submodule_status $(moose_revision_header) $(moose_LIB) $(LIBCEED_BUILD)
 
 # [JWP] With libtool, there is only one link command, it should work whether you are creating
 # shared or static libraries, and it should be portable across Linux and Mac...
@@ -449,7 +449,7 @@ $(hit_LIB): $(hit_objects)
 $(moose_LIB): $(moose_objects) $(pcre_LIB) $(gtest_LIB) $(hit_LIB) $(pyhit_LIB) $(MOOSE_KOKKOS_LIB)
 	@echo "Linking Library "$@"..."
 	@$(libmesh_LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=link --quiet \
-	  $(libmesh_CXX) $(CXXFLAGS) $(libmesh_CXXFLAGS) -o $@ $(moose_objects) $(pcre_LIB) $(png_LIB) $(libmesh_LDFLAGS) $(libmesh_LIBS) $(EXTERNAL_FLAGS) $(MOOSE_KOKKOS_LDFLAGS) -rpath $(FRAMEWORK_DIR)
+	  $(libmesh_CXX) $(CXXFLAGS) $(libmesh_CXXFLAGS) -o $@ $(moose_objects) $(pcre_LIB) $(png_LIB) $(libmesh_LDFLAGS) $(libmesh_LIBS) $(EXTERNAL_FLAGS) $(MOOSE_KOKKOS_LDFLAGS) $(LIBCEED_LDFLAGS) -rpath $(FRAMEWORK_DIR)
 	@$(libmesh_LIBTOOL) --mode=install --quiet install -c $(moose_LIB) $(FRAMEWORK_DIR)
 
 ifeq ($(MOOSE_HEADER_SYMLINKS),true)
@@ -588,7 +588,7 @@ app_KOKKOS_DEPS := $(KOKKOS_DEPS)
 #    clean' will only clean debug object and executable files.
 # .) Calling 'make clean' in an app should not remove MOOSE object
 #    files, libraries, etc.
-clean: $(KOKKOS_CLEAN)
+clean: $(KOKKOS_CLEAN) $(LIBCEED_CLEAN)
 	@$(libmesh_LIBTOOL) --mode=uninstall --quiet rm -f $(app_LIB) $(app_test_LIB)
 	@rm -rf $(app_EXEC) $(app_objects) $(main_object) $(app_deps) $(app_HEADER) $(app_test_objects) $(app_unity_srcfiles)
 	@rm -rf $(app_KOKKOS_LIB) $(app_KOKKOS_OBJECTS) $(app_KOKKOS_DEPS) KokkosCore_Config_PostInclude.tmp desul

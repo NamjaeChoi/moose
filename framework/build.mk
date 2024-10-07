@@ -214,6 +214,12 @@ mpif90_command := $(libmesh_F90)
 
 include $(FRAMEWORK_DIR)/kokkos.mk
 
+#
+# libCEED rules
+#
+
+include $(FRAMEWORK_DIR)/libceed.mk
+
 # If $(libmesh_f90) is an mpiXXX compiler script, use -show
 # to determine the base compiler
 ifneq (,$(findstring mpi,$(mpif90_command)))

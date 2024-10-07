@@ -9,10 +9,6 @@
 
 #pragma once
 
-#ifndef MOOSE_GPU_SCOPE
-#error GPU header was included in a source file which is not in the GPU compilation scope
-#endif
-
 // NVCC invokes compile error due to conflicting built-in and PETSc complex operators
 // so this preprocessor should be defined
 #define PETSC_SKIP_CXX_COMPLEX_FIX 1
@@ -40,7 +36,3 @@
 #ifdef KOKKOS_ENABLE_SYCL
 #define MemSpace Kokkos::Experimental::SYCL
 #endif
-
-// Predefined maximum values
-constexpr unsigned int MAX_TAG = 30;
-constexpr unsigned int MAX_DOF = 30;

@@ -50,3 +50,6 @@
 [submodule "framework/contrib/kokkos"]
     path = framework/contrib/kokkos
     url = https://github.com/kokkos/kokkos.git
+[submodule "libCEED"]
+	path = libCEED
+	url = https://github.com/CEED/libCEED.git

@@ -15,12 +15,14 @@
 #include "MaterialData.h"
 #include "MooseObject.h"
 
+#include "CEEDRestrictor.h"
+
 #define usingBlockRestrictableMembers using BlockRestrictable::getBlockCoordSystem
 
 class FEProblemBase;
 class MooseMesh;
-
 class MooseVariableFieldBase;
+class CEEDAssembly;
 
 /**
  * \class BlockRestrictable BlockRestrictable.h
@@ -218,6 +220,13 @@ protected:
    */
   void initializeBlockRestrictable(const MooseObject * moose_object);
 
+#ifndef MOOSE_IGNORE_LIBCEED
+  void initializeCEEDBlockRestrictable(const CEEDAssembly & assembly,
+                                       const std::set<MooseVariableFieldBase *> & variables);
+
+  auto & getCEEDRestrictor() { return _rstr; }
+#endif
+
   /**
    * Check if the blocks this object operates on all have the same coordinate system,
    * and if so return it.
@@ -257,6 +266,11 @@ private:
 
   /// Largest mesh dimension of the elements in the blocks for this object
   unsigned int _blk_dim;
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  // CEED restrictor
+  CEEDRestrictor _rstr;
+#endif
 };
 
 template <typename T, bool is_ad>

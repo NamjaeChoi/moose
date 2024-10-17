@@ -49,6 +49,7 @@ public:
     friend class NonlinearEigenSystem;
     template <typename>
     friend class MooseObjectTagWarehouse;
+    friend class CEEDResidualObject;
 
     VectorTagsKey() {}
     VectorTagsKey(const VectorTagsKey &) {}
@@ -64,6 +65,7 @@ public:
     friend class NonlinearEigenSystem;
     template <typename>
     friend class MooseObjectTagWarehouse;
+    friend class CEEDResidualObject;
 
     MatrixTagsKey() {}
     MatrixTagsKey(const MatrixTagsKey &) {}

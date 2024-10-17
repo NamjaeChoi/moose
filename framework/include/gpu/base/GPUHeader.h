@@ -36,3 +36,27 @@
 #ifdef KOKKOS_ENABLE_SYCL
 #define MemSpace Kokkos::Experimental::SYCL
 #endif
+
+// Convenient mirror class
+template <typename T>
+class GPUMirror
+{
+public:
+  GPUMirror() {}
+  GPUMirror(const T & object) { create(object); }
+  ~GPUMirror() { free(); }
+
+  KOKKOS_FUNCTION T * get() { return _mirror; }
+
+  void create(const T & object)
+  {
+    _mirror = static_cast<T *>(Kokkos::kokkos_malloc(sizeof(T)));
+
+    Kokkos::Impl::DeepCopy<MemSpace, Kokkos::HostSpace>(_mirror, &object, sizeof(T));
+    Kokkos::fence();
+  }
+  void free() { Kokkos::kokkos_free(_mirror); }
+
+private:
+  T * _mirror = nullptr;
+};

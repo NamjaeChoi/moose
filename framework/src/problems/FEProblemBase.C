@@ -6135,6 +6135,11 @@ FEProblemBase::init()
   if (_displaced_problem)
     _displaced_problem->init();
 
+#ifndef MOOSE_IGNORE_LIBCEED
+  if (_have_ceed_objects)
+    initCEED();
+#endif
+
   _initialized = true;
 }
 

@@ -14,7 +14,7 @@
 #include "PointListAdaptor.h"
 #include "Function.h"
 
-#include "libmesh/data_type.h"
+#include <libmesh/data_type.h>
 
 #include <set>
 #include <map>

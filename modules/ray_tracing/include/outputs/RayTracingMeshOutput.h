@@ -18,9 +18,9 @@
 #include "UserObjectInterface.h"
 
 // libMesh includes
-#include "libmesh/distributed_mesh.h"
-#include "libmesh/equation_systems.h"
-#include "libmesh/explicit_system.h"
+#include <libmesh/distributed_mesh.h>
+#include <libmesh/equation_systems.h>
+#include <libmesh/explicit_system.h>
 
 // Forward declarations
 class RayTracingStudy;

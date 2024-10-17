@@ -15,7 +15,7 @@
 #include "MooseBaseErrorInterface.h"
 #include "DataFileInterface.h"
 
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 /**
  * Base class shared by both Action and MooseObject.

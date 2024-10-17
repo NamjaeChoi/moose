@@ -14,7 +14,7 @@
 #include "DataIO.h"
 
 #include "json.h"
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 // forward declarations
 namespace libMesh

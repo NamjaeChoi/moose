@@ -11,7 +11,7 @@
 
 #include "InputParameters.h"
 #include "FileLineInfo.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 #include <string>
 #include <vector>
 #include <utility>

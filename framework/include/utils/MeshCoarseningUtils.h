@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "libmesh/elem.h"
-#include "libmesh/node.h"
-#include "libmesh/point.h"
+#include <libmesh/elem.h>
+#include <libmesh/node.h>
+#include <libmesh/point.h>
 
 namespace MeshCoarseningUtils
 {

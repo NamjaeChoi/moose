@@ -43,8 +43,8 @@
 #include "SolutionInvalidity.h"
 #include "PetscSupport.h"
 
-#include "libmesh/enum_quadrature_type.h"
-#include "libmesh/equation_systems.h"
+#include <libmesh/enum_quadrature_type.h>
+#include <libmesh/equation_systems.h>
 
 #include <unordered_map>
 #include <memory>

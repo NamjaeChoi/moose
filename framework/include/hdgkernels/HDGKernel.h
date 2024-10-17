@@ -12,8 +12,8 @@
 #include "KernelBase.h"
 #include "HDGData.h"
 #include "ADFunctorInterface.h"
-#include "libmesh/dense_matrix.h"
-#include "libmesh/dense_vector.h"
+#include <libmesh/dense_matrix.h>
+#include <libmesh/dense_vector.h>
 
 template <typename>
 class MooseObjectWarehouse;

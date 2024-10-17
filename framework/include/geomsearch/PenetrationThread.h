@@ -13,7 +13,7 @@
 #include "MooseTypes.h"
 #include "PenetrationLocator.h"
 
-#include "libmesh/elem_side_builder.h"
+#include <libmesh/elem_side_builder.h>
 
 // Forward declarations
 template <typename>

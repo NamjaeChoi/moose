@@ -12,7 +12,7 @@
 // MOOSE includes
 #include "Action.h"
 
-#include "libmesh/fe_type.h"
+#include <libmesh/fe_type.h>
 
 class GrainGrowthAction : public Action
 {

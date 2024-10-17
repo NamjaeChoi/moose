@@ -10,7 +10,7 @@
 #pragma once
 
 #include "FEProblem.h"
-#include "libmesh/enum_norm_type.h"
+#include <libmesh/enum_norm_type.h>
 
 /**
  * FEProblemBase derived class to enable convergence checking relative to a user-specified

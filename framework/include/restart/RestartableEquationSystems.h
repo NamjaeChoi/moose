@@ -14,9 +14,9 @@
 #include <unordered_map>
 #include <iostream>
 
-#include "libmesh/enum_order.h"
-#include "libmesh/fe_type.h"
-#include "libmesh/equation_systems.h"
+#include <libmesh/enum_order.h>
+#include <libmesh/fe_type.h>
+#include <libmesh/equation_systems.h>
 
 namespace libMesh
 {

@@ -15,8 +15,8 @@
 // Moose includes
 #include "ColumnMajorMatrix.h"
 
-#include "libmesh/vector_value.h"
-#include "libmesh/tensor_value.h"
+#include <libmesh/vector_value.h>
+#include <libmesh/tensor_value.h>
 
 class ColumnMajorMatrixTest : public ::testing::Test
 {

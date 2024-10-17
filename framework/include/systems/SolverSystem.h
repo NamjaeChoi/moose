@@ -12,7 +12,7 @@
 #include "SystemBase.h"
 #include "MooseTypes.h"
 
-#include "libmesh/system.h"
+#include <libmesh/system.h>
 
 #include <string>
 

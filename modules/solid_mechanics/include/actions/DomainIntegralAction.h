@@ -14,7 +14,7 @@
 #include "MooseEnum.h"
 #include "MooseTypes.h"
 
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 /**
  * Action to set up all objects used in computation of fracture domain integrals

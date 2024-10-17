@@ -14,9 +14,9 @@
 #include "PenetrationInfo.h"
 #include "PerfGraphInterface.h"
 
-#include "libmesh/vector_value.h"
-#include "libmesh/point.h"
-#include "libmesh/fe_base.h"
+#include <libmesh/vector_value.h>
+#include <libmesh/point.h>
+#include <libmesh/fe_base.h>
 
 // Forward Declarations
 class SubProblem;

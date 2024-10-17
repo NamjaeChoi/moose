@@ -14,7 +14,7 @@
 #include "MooseTypes.h"
 
 #include "MooseTypes.h"
-#include "libmesh/quadrature_gauss.h"
+#include <libmesh/quadrature_gauss.h>
 
 class Function;
 

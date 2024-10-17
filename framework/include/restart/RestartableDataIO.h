@@ -11,7 +11,7 @@
 
 #include "PerfGraphInterface.h"
 
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 #include <vector>
 #include <variant>

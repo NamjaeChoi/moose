@@ -16,8 +16,8 @@
 // Included so mesh generators don't need to include this when constructing MeshBase objects
 #include "MooseMesh.h"
 
-#include "libmesh/mesh_base.h"
-#include "libmesh/parameters.h"
+#include <libmesh/mesh_base.h>
+#include <libmesh/parameters.h>
 
 class MooseMesh;
 namespace libMesh

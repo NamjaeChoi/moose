@@ -17,7 +17,7 @@
 #include "MooseError.h"
 #include "DataIO.h"
 #include "MultiMooseEnum.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 namespace Moose
 {

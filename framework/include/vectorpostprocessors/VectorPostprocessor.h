@@ -16,7 +16,7 @@
 #include "ReporterContext.h"
 
 // libMesh
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 // Forward declarations
 class FEProblemBase;

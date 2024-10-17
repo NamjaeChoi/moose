@@ -13,7 +13,7 @@
 #include "THMIndicesVACE.h"
 #include "MooseVariable.h"
 
-#include "libmesh/elem.h"
+#include <libmesh/elem.h>
 
 namespace FlowModel1PhaseUtils
 {

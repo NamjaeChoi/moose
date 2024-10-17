@@ -11,7 +11,7 @@
 
 #include "SideSetsGeneratorBase.h"
 
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * Adds the faces on the boundary of given block

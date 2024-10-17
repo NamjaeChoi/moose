@@ -13,7 +13,7 @@
 #include "Indicator.h"
 #include "MaterialPropertyInterface.h"
 
-#include "libmesh/quadrature.h"
+#include <libmesh/quadrature.h>
 
 /**
  * Computes the minimum element size.

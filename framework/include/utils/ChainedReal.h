@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "libmesh/libmesh_common.h"
-#include "libmesh/compare_types.h"
+#include <libmesh/libmesh_common.h>
+#include <libmesh/compare_types.h>
 
-#include "metaphysicl/metaphysicl_version.h"
+#include <metaphysicl/metaphysicl_version.h>
 
 namespace MetaPhysicL
 {
@@ -20,7 +20,7 @@ namespace MetaPhysicL
 template <typename, typename>
 class DualNumber;
 #else
-#include "metaphysicl/dualnumber_forward.h"
+#include <metaphysicl/dualnumber_forward.h>
 #endif
 }
 

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "metaphysicl/raw_type.h"
+#include <metaphysicl/raw_type.h>
 
 // Relative tolerance to be used when comparing to a value from external fluid
 // property packages, which might be using different underlying models

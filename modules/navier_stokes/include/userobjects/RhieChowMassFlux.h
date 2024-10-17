@@ -20,7 +20,7 @@
 #include <set>
 #include <unordered_set>
 
-#include "libmesh/petsc_vector.h"
+#include <libmesh/petsc_vector.h>
 
 class MooseMesh;
 class INSFVVelocityVariable;

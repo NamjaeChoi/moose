@@ -10,7 +10,7 @@
 #pragma once
 
 #include "MooseMesh.h"
-#include "libmesh/enum_elem_type.h"
+#include <libmesh/enum_elem_type.h>
 
 /**
  * Mesh for THM

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/libmesh_common.h"
+#include <libmesh/libmesh_common.h>
 
 #define BuiltInSpecializations(Type, BuiltinType)                                                  \
   template <>                                                                                      \

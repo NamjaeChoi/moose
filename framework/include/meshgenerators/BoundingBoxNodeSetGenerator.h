@@ -12,7 +12,7 @@
 #include "MeshGenerator.h"
 #include "MooseEnum.h"
 
-#include "libmesh/bounding_box.h"
+#include <libmesh/bounding_box.h>
 
 namespace libMesh
 {

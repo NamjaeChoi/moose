@@ -12,7 +12,7 @@
 #include "SnapshotContainerBase.h"
 #include "UniqueStorage.h"
 
-#include "libmesh/petsc_vector.h"
+#include <libmesh/petsc_vector.h>
 
 /**
  * This class is responsible for collecting solution vectors in one place. The

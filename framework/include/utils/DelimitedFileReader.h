@@ -14,7 +14,7 @@
 #include <string>
 #include <fstream>
 
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 // MOOSE includes
 #include "MooseEnum.h"

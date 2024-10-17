@@ -13,7 +13,7 @@
 #include "PorousFlowDependencies.h"
 #include "MooseEnum.h"
 
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 /**
  * Base class for PorousFlow actions.  This act() method makes consistency checks and

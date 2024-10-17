@@ -10,7 +10,7 @@
 #pragma once
 
 #include "MeshGenerator.h"
-#include "libmesh/replicated_mesh.h"
+#include <libmesh/replicated_mesh.h>
 #include "MooseEnum.h"
 
 /**

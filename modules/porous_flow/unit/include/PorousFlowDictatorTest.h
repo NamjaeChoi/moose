@@ -11,7 +11,7 @@
 
 #include "MooseObjectUnitTest.h"
 #include "PorousFlowDictator.h"
-#include "libmesh/string_to_enum.h"
+#include <libmesh/string_to_enum.h>
 
 class PorousFlowDictator;
 

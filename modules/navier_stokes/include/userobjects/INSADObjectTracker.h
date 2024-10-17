@@ -15,7 +15,7 @@
 #include "MooseError.h"
 #include "InputParameters.h"
 
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 #include <unordered_map>
 #include <set>

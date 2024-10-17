@@ -13,7 +13,7 @@
 
 // Moose includes
 #include "SymmetricRankTwoTensor.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 class SymmetricRankTwoTensorTest : public ::testing::Test
 {

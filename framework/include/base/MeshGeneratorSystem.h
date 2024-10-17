@@ -12,8 +12,8 @@
 #include "InputParameters.h"
 #include "PerfGraphInterface.h"
 
-#include "libmesh/parallel_object.h"
-#include "libmesh/mesh_base.h"
+#include <libmesh/parallel_object.h>
+#include <libmesh/mesh_base.h>
 
 class MooseApp;
 class MeshGeneratorMesh;

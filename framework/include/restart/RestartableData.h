@@ -19,7 +19,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 class RestartableDataReader;
 class RestartableDataWriter;

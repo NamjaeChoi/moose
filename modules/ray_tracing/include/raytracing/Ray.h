@@ -17,7 +17,7 @@
 #include "MooseTypes.h"
 
 // libMesh Includes
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 // Forward declarations
 namespace libMesh

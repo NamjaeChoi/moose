@@ -11,7 +11,7 @@
 
 #include "MooseUtils.h"
 #include "MooseHashing.h"
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /// An unordered map indexed by Point, eg 3 floating point numbers
 /// Because floating point rounding errors can affect the hashing, eg the binning of values,

@@ -11,7 +11,7 @@
 
 #include "RelationshipManager.h"
 
-#include "libmesh/ghosting_functor.h"
+#include <libmesh/ghosting_functor.h>
 
 class MooseMesh;
 

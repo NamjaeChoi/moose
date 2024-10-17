@@ -11,10 +11,10 @@
 
 #include "Moose.h"
 #include "MooseException.h"
-#include "libmesh/threads.h"
+#include <libmesh/threads.h>
 
-#include "libmesh/print_trace.h"
-#include "libmesh/libmesh_common.h"
+#include <libmesh/print_trace.h>
+#include <libmesh/libmesh_common.h>
 
 // C++ includes
 #include <cstdlib>

@@ -12,7 +12,7 @@
 #include "MooseTypes.h"
 #include "MortarExecutorInterface.h"
 
-#include "libmesh/libmesh_common.h"
+#include <libmesh/libmesh_common.h>
 
 class MortarConstraintBase;
 class SubProblem;

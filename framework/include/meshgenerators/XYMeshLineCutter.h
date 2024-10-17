@@ -10,7 +10,7 @@
 #pragma once
 #include "MeshGenerator.h"
 
-#include "libmesh/face_tri3.h"
+#include <libmesh/face_tri3.h>
 
 /**
  * This XYMeshLineCutter object is designed to trim the input mesh by removing all the elements on

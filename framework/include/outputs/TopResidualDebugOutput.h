@@ -12,7 +12,7 @@
 // MOOSE includes
 #include "PetscOutput.h"
 
-#include "libmesh/system.h"
+#include <libmesh/system.h>
 
 class NonlinearSystemBase;
 

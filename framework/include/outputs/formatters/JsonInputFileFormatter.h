@@ -9,7 +9,7 @@
 
 #pragma once
 #include <sstream>
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 /**
  * This class produces produces a dump of the InputParameters that appears like the normal input

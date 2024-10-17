@@ -10,7 +10,6 @@
 #pragma once
 
 #include "InputParameters.h"
-#include "MooseObject.h"
 
 #include <string>
 #include <vector>
@@ -18,7 +17,7 @@
 #include <map>
 #include <memory>
 
-#include "libmesh/utility.h"
+#include <libmesh/utility.h>
 
 #define combineNames1(X, Y) X##Y
 #define combineNames(X, Y) combineNames1(X, Y)

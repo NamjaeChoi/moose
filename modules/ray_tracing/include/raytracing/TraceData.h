@@ -16,7 +16,7 @@
 #include "MooseError.h"
 
 // libMesh includes
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * Data structure that stores the necessary information for outputting a Ray at a point

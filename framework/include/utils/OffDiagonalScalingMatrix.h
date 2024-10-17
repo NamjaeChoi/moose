@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/lumped_mass_matrix.h"
+#include <libmesh/lumped_mass_matrix.h>
 
 template <typename T>
 using OffDiagonalScalingMatrix = libMesh::LumpedMassMatrix<T>;

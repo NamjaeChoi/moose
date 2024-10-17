@@ -10,7 +10,7 @@
 #pragma once
 
 #include "InputParameters.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 /**
  * Interface for specifying gravity at the component level

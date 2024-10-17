@@ -9,11 +9,11 @@
 
 #pragma once
 
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 
 #ifdef LIBMESH_HAVE_SLEPC
 
-#include "libmesh/petsc_macro.h"
+#include <libmesh/petsc_macro.h>
 
 #include "Moose.h"
 #include "SystemBase.h"
@@ -23,8 +23,8 @@
 #include <slepceps.h>
 #include <slepc/private/epsimpl.h>
 /* In order to use libMesh preconditioner */
-#include "libmesh/linear_solver.h"
-#include "libmesh/preconditioner.h"
+#include <libmesh/linear_solver.h>
+#include <libmesh/preconditioner.h>
 
 class EigenProblem;
 class InputParameters;

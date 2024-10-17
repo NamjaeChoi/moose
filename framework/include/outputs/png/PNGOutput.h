@@ -17,8 +17,8 @@
 #include "FileOutput.h"
 #include "MooseEnum.h"
 // libmesh includes
-#include "libmesh/mesh_function.h"
-#include "libmesh/bounding_box.h"
+#include <libmesh/mesh_function.h>
+#include <libmesh/bounding_box.h>
 
 class PNGOutput : public FileOutput
 {

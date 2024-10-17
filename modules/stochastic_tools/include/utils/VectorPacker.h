@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "libmesh/packing.h"
-#include "libmesh/dense_vector.h"
+#include <libmesh/packing.h>
+#include <libmesh/dense_vector.h>
 #include "MooseTypes.h"
 
 namespace libMesh

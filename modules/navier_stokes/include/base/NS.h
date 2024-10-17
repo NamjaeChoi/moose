@@ -12,7 +12,7 @@
 #include <string>
 #include "MathUtils.h"
 #include "MooseTypes.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 #include "HeatConductionNames.h"
 
 namespace NS

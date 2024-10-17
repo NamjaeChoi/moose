@@ -11,7 +11,7 @@
 
 #include "PerfGraphInterface.h"
 
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 /**
  * Builds lists and maps that help in knowing which physical hardware nodes each rank is on.

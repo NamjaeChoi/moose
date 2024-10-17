@@ -10,7 +10,7 @@
 #pragma once
 
 // libMesh includes
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 #include "MooseError.h"
 

@@ -12,7 +12,7 @@
 #include "Moose.h"
 
 // libMesh
-#include "libmesh/libmesh.h"
+#include <libmesh/libmesh.h>
 
 /**
  * Initialization object for any MOOSE-based application

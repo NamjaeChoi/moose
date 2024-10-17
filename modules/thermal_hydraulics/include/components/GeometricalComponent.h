@@ -10,7 +10,7 @@
 #pragma once
 
 #include "Component.h"
-#include "libmesh/enum_elem_type.h"
+#include <libmesh/enum_elem_type.h>
 
 /**
  * Intermediate class for components that have mesh

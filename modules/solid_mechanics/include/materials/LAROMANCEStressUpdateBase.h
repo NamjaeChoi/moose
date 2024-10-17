@@ -10,7 +10,7 @@
 #pragma once
 
 #include "RadialReturnCreepStressUpdateBase.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 template <bool is_ad>
 class LAROMANCEStressUpdateBaseTempl : public RadialReturnCreepStressUpdateBaseTempl<is_ad>

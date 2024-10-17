@@ -13,7 +13,7 @@
 #include "Assembly.h"
 #include "SimpleTestShapeElementUserObject.h"
 
-#include "libmesh/quadrature.h"
+#include <libmesh/quadrature.h>
 
 class SimpleTestShapeElementKernel : public NonlocalKernel
 {

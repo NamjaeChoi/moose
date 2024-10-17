@@ -14,8 +14,8 @@
 #include "GeometricSearchData.h"
 
 // libMesh
-#include "libmesh/equation_systems.h"
-#include "libmesh/enum_quadrature_type.h"
+#include <libmesh/equation_systems.h>
+#include <libmesh/enum_quadrature_type.h>
 
 // Forward declarations
 class MooseVariableFieldBase;

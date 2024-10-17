@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 
 #ifdef LIBMESH_ENABLE_AMR
 
@@ -19,10 +19,10 @@
 #include "MooseTypes.h"
 #include "PerfGraphInterface.h"
 
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 // libMesh
-#include "libmesh/mesh_refinement.h"
+#include <libmesh/mesh_refinement.h>
 
 class FEProblemBase;
 class MooseMesh;

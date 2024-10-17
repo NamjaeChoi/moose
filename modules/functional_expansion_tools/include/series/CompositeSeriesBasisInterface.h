@@ -13,7 +13,7 @@
 
 #include "FunctionalBasisInterface.h"
 
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 class SingleSeriesBasisInterface;
 

@@ -17,8 +17,8 @@
 #include "ParallelStudyMethod.h"
 
 // libMesh Includes
-#include "libmesh/parallel.h"
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel.h>
+#include <libmesh/parallel_object.h>
 
 // System Includes
 #include <list>

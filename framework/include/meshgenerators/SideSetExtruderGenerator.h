@@ -10,7 +10,7 @@
 #pragma once
 
 #include "MeshGenerator.h"
-#include "libmesh/mesh_generation.h"
+#include <libmesh/mesh_generation.h>
 
 /**
  * Extrude a sideset from a mesh in a given direction

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 #include "MooseTypes.h"
 
 /**

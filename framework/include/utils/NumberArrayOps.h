@@ -11,7 +11,7 @@
 
 #include "MooseConfig.h"
 #include "MooseError.h"
-#include "metaphysicl/dualnumberarray.h"
+#include <metaphysicl/dualnumberarray.h>
 
 namespace Moose
 {

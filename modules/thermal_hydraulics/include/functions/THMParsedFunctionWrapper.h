@@ -12,7 +12,7 @@
 #include "MooseError.h"
 #include "MooseTypes.h"
 #include "ControlData.h"
-#include "libmesh/parsed_function.h"
+#include <libmesh/parsed_function.h>
 #include <string>
 #include <vector>
 

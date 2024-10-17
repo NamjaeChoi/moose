@@ -15,7 +15,7 @@
 #include "MooseEnum.h"
 #include "InputParameters.h"
 
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 // C++ includes
 #include <vector>

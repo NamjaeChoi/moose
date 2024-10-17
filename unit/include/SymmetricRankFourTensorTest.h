@@ -15,7 +15,7 @@
 #include "SymmetricRankFourTensor.h"
 #include "RankFourTensor.h"
 
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 class SymmetricRankFourTensorTest : public ::testing::Test
 {

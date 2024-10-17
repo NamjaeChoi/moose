@@ -16,8 +16,8 @@
 #include "DataIO.h"
 #include "ElementPairInfo.h"
 
-#include "libmesh/vector_value.h"
-#include "libmesh/point.h"
+#include <libmesh/vector_value.h>
+#include <libmesh/point.h>
 
 // libMesh forward declarations
 namespace libMesh

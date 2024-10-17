@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 #include <Eigen/Dense>
 
 #ifdef LIBMESH_USE_COMPLEX_NUMBERS

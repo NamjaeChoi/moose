@@ -11,7 +11,7 @@
 
 #include "ElementUserObject.h"
 
-#include "libmesh/enum_elem_quality.h"
+#include <libmesh/enum_elem_quality.h>
 
 class ElementQualityChecker : public ElementUserObject
 {

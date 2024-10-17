@@ -19,7 +19,7 @@
 #include "FEProblem.h"
 
 // libMesh includes
-#include "libmesh/quadrature.h"
+#include <libmesh/quadrature.h>
 
 // Forward Declarations
 class MooseMesh;

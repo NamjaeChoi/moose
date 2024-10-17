@@ -11,7 +11,7 @@
 
 #include "OutputInterface.h"
 #include "NonADFunctorInterface.h"
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 class MooseObject;
 

@@ -13,7 +13,7 @@
 #include "MooseTypes.h"
 
 // libMesh includes
-#include "libmesh/enum_order.h"
+#include <libmesh/enum_order.h>
 
 // C++ includes
 #include <map>

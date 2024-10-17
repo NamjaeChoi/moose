@@ -14,7 +14,7 @@
 #include "QuadratureSampler.h"
 
 #include "Distribution.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 class PolynomialChaos : public SurrogateModel
 {

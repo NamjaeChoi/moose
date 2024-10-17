@@ -11,8 +11,8 @@
 
 #include "MooseTypes.h"
 #include "InputParameters.h"
-#include "libmesh/vector_value.h"
-#include "libmesh/tensor_value.h"
+#include <libmesh/vector_value.h>
+#include <libmesh/tensor_value.h>
 
 class MooseObject;
 

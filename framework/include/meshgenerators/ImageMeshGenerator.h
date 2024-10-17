@@ -11,7 +11,7 @@
 
 #include "GeneratedMeshGenerator.h"
 #include "FileRangeBuilder.h"
-#include "libmesh/replicated_mesh.h"
+#include <libmesh/replicated_mesh.h>
 
 /**
  * A 2D GeneratedMesh where xmin, xmax, etc. are determined from an input image file.

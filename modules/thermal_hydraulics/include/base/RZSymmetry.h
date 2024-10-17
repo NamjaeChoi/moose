@@ -11,7 +11,7 @@
 
 #include "InputParameters.h"
 
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 /**
  * Interface class for enabling objects to be RZ symmetric about arbitrary axis

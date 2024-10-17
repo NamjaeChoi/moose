@@ -20,7 +20,7 @@
 #include "SwapBackSentinel.h"
 #include "FEProblem.h"
 
-#include "libmesh/quadrature.h" // _qrule->n_points()
+#include <libmesh/quadrature.h> // _qrule->n_points()
 
 // Forward Declarations
 class MooseMesh;

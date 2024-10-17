@@ -11,7 +11,7 @@
 
 #include "Moose.h"
 #include "MooseTypes.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 #include "RankTwoTensor.h"
 
 template <class C>

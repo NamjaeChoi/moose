@@ -11,7 +11,7 @@
 
 #include "MeshGenerator.h"
 
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * Extrudes a mesh to another dimension

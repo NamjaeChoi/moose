@@ -20,9 +20,9 @@
 #include "MatrixTools.h"
 #include "PermutationTensor.h"
 
-#include "libmesh/utility.h"
-#include "libmesh/tensor_value.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/utility.h>
+#include <libmesh/tensor_value.h>
+#include <libmesh/vector_value.h>
 
 // Eigen needs LU
 #include "Eigen/LU"

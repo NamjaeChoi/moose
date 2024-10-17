@@ -9,14 +9,14 @@
 
 #pragma once
 
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 
 #ifdef LIBMESH_HAVE_SLEPC
 
 #include "EigenProblem.h"
 
-#include "libmesh/solver_configuration.h"
-#include "libmesh/slepc_eigen_solver.h"
+#include <libmesh/solver_configuration.h>
+#include <libmesh/slepc_eigen_solver.h>
 
 class SlepcEigenSolverConfiguration : public libMesh::SolverConfiguration
 {

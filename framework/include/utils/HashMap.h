@@ -10,7 +10,7 @@
 #pragma once
 
 /// HashMap is an abstraction for dictionary data type, we make it thread-safe by locking inserts
-#include "libmesh/threads.h"
+#include <libmesh/threads.h>
 
 #include <unordered_map>
 

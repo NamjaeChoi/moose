@@ -13,7 +13,7 @@
 #include "InputParameters.h"
 #include "NamingInterface.h"
 #include "THMEnums.h"
-#include "libmesh/fe_type.h"
+#include <libmesh/fe_type.h>
 
 class THMProblem;
 class Factory;

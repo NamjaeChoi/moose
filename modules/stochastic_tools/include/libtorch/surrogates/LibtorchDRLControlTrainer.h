@@ -14,7 +14,7 @@
 #include <torch/torch.h>
 #include "LibtorchArtificialNeuralNet.h"
 
-#include "libmesh/utility.h"
+#include <libmesh/utility.h>
 #include "SurrogateTrainer.h"
 
 /**

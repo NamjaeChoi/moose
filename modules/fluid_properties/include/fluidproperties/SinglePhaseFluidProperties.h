@@ -11,7 +11,7 @@
 
 #include "FluidProperties.h"
 #include "NewtonInversion.h"
-#include "metaphysicl/dualnumberarray.h"
+#include <metaphysicl/dualnumberarray.h>
 
 /**
  * Adds AD versions of each fluid property. These functions use the Real versions of these methods

@@ -11,7 +11,7 @@
 
 #include "MooseTypes.h"
 
-#include "libmesh/enum_order.h"
+#include <libmesh/enum_order.h>
 
 // Forward Declarations
 class GeometricSearchData;

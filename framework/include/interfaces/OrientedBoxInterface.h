@@ -12,9 +12,9 @@
 // MOOSE includes
 #include "MooseTypes.h"
 
-#include "libmesh/bounding_box.h" // For destructor
-#include "libmesh/vector_value.h"
-#include "libmesh/tensor_value.h"
+#include <libmesh/bounding_box.h> // For destructor
+#include <libmesh/vector_value.h>
+#include <libmesh/tensor_value.h>
 
 // Forward declarations
 class InputParameters;

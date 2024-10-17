@@ -11,7 +11,7 @@
 
 // MOOSE includes
 #include "AuxKernel.h"
-#include "libmesh/bounding_box.h"
+#include <libmesh/bounding_box.h>
 
 /**
  * Creates artificial, temperature driven corrosion.

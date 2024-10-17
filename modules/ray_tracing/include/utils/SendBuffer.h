@@ -14,7 +14,7 @@
 #include "SharedPool.h"
 
 // libMesh Includes
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 // Local includes
 #include "ParallelStudyMethod.h"

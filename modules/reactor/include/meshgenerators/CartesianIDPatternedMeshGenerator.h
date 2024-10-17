@@ -11,7 +11,7 @@
 
 #include "PatternedMeshGenerator.h"
 #include "ReportingIDGeneratorUtils.h"
-#include "libmesh/replicated_mesh.h"
+#include <libmesh/replicated_mesh.h>
 
 /**
  * Generates patterned Cartesian meshes with a reporting ID

@@ -11,7 +11,7 @@
 
 #include "ElementIntegralVariablePostprocessor.h"
 
-#include "libmesh/mesh_tools.h"
+#include <libmesh/mesh_tools.h>
 
 /**
  * Computes the average value of a variable on each block

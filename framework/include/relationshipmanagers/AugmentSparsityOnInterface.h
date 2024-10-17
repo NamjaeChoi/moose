@@ -14,7 +14,7 @@
 #include "RelationshipManager.h"
 
 // libMesh includes
-#include "libmesh/mesh_base.h"
+#include <libmesh/mesh_base.h>
 
 using libMesh::boundary_id_type;
 using libMesh::CouplingMatrix;

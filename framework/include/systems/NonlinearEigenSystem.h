@@ -9,12 +9,12 @@
 
 #pragma once
 
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 
 #include "NonlinearSystemBase.h"
 #include "SlepcEigenSolverConfiguration.h"
 
-#include "libmesh/condensed_eigen_system.h"
+#include <libmesh/condensed_eigen_system.h>
 
 // forward declarations
 class EigenProblem;

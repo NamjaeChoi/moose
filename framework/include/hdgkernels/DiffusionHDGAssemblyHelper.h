@@ -14,7 +14,7 @@
 #include "MooseFunctor.h"
 #include "Function.h"
 #include "HDGData.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 #include <vector>
 
 template <typename>

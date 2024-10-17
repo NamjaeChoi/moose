@@ -15,9 +15,9 @@
 #include "InputParameters.h"
 #include "THMEnums.h"
 
-#include "libmesh/elem.h"
-#include "libmesh/vector_value.h"
-#include "libmesh/point.h"
+#include <libmesh/elem.h>
+#include <libmesh/vector_value.h>
+#include <libmesh/point.h>
 
 /**
  * Interface class for 1-D slope reconstruction

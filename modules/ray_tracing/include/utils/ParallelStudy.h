@@ -23,7 +23,7 @@
 #include "ReceiveBuffer.h"
 
 // libMesh Includes
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 template <typename WorkType, typename ParallelDataType>
 class ParallelStudy : public ParallelObject

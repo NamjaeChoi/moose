@@ -11,7 +11,7 @@
 
 #include "RankFourTensor.h"
 #include "RankTwoTensor.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 #include "MooseTypes.h"
 #include "RotationMatrix.h"
 

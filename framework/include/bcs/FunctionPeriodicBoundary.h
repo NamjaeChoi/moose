@@ -12,8 +12,8 @@
 #include "Moose.h"
 
 // libMesh
-#include "libmesh/point.h"
-#include "libmesh/periodic_boundary_base.h"
+#include <libmesh/point.h>
+#include <libmesh/periodic_boundary_base.h>
 
 #include <vector>
 

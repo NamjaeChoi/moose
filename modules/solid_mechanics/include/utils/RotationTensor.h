@@ -12,8 +12,8 @@
 #include "Moose.h"
 
 // Any requisite includes here
-#include "libmesh/tensor_value.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/tensor_value.h>
+#include <libmesh/vector_value.h>
 
 /**
  * This is a RealTensor version of a rotation matrix

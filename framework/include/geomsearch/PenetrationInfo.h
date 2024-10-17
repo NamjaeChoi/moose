@@ -13,8 +13,8 @@
 #include "Moose.h"
 #include "DataIO.h"
 
-#include "libmesh/vector_value.h"
-#include "libmesh/point.h"
+#include <libmesh/vector_value.h>
+#include <libmesh/point.h>
 
 // libMesh forward declarations
 namespace libMesh

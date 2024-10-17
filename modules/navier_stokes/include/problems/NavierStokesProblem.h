@@ -10,7 +10,7 @@
 #pragma once
 
 #include "FEProblem.h"
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 #include <petscsnes.h>
 
 class NonlinearSystem;

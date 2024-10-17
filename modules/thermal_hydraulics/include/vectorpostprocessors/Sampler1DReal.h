@@ -16,7 +16,7 @@
 #include "MooseMesh.h"
 #include "SwapBackSentinel.h"
 #include "FEProblem.h"
-#include "libmesh/quadrature.h"
+#include <libmesh/quadrature.h>
 
 class MooseMesh;
 

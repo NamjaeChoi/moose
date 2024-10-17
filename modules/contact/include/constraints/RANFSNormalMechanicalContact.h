@@ -13,7 +13,7 @@
 #include "NodeFaceConstraint.h"
 #include "MooseEnum.h"
 
-#include "libmesh/coupling_matrix.h"
+#include <libmesh/coupling_matrix.h>
 
 #include <vector>
 #include <unordered_map>

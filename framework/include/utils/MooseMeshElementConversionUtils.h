@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/replicated_mesh.h"
+#include <libmesh/replicated_mesh.h>
 
 #include "MooseTypes.h"
 

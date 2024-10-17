@@ -13,7 +13,7 @@
 
 // Moose includes
 #include "RankFourTensor.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 class RankFourTensorTest : public ::testing::Test
 {

@@ -12,7 +12,7 @@
 #include "GeneralReporter.h"
 #include "VectorCalculators.h"
 
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 /**
  * ReporterContext that utilizes a Calculator object to compute its value and confidence levels

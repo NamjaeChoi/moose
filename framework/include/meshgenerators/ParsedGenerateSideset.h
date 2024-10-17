@@ -11,7 +11,7 @@
 
 #include "SideSetsGeneratorBase.h"
 #include "FunctionParserUtils.h"
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * MeshGenerator for defining a Sideset by a parsed expression and

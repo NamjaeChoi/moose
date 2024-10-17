@@ -13,10 +13,10 @@
 #include "GeneralizedReturnMappingSolution.h"
 #include "MooseTypes.h"
 
-#include "libmesh/ignore_warnings.h"
+#include <libmesh/ignore_warnings.h>
 #include "Eigen/Dense"
 #include "Eigen/Eigenvalues"
-#include "libmesh/restore_warnings.h"
+#include <libmesh/restore_warnings.h>
 
 #include <limits>
 

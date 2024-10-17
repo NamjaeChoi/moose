@@ -10,7 +10,7 @@
 #pragma once
 
 #include "GeneralVectorPostprocessor.h"
-#include "libmesh/communicator.h"
+#include <libmesh/communicator.h>
 
 class AverageSectionValueSampler : public GeneralVectorPostprocessor
 {

@@ -10,7 +10,7 @@
 #pragma once
 
 #include "QuasiStaticSolidMechanicsPhysicsBase.h"
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 class QuasiStaticSolidMechanicsPhysics : public QuasiStaticSolidMechanicsPhysicsBase
 {

@@ -13,8 +13,8 @@
 #include "MooseMesh.h"
 #include "PointListAdaptor.h"
 
-#include "libmesh/nanoflann.hpp"
-#include "libmesh/utility.h"
+#include <libmesh/nanoflann.hpp>
+#include <libmesh/utility.h>
 
 // Make newer nanoflann API compatible with older nanoflann versions
 #if NANOFLANN_VERSION < 0x150

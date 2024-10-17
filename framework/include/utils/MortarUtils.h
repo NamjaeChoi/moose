@@ -14,9 +14,9 @@
 #include "MaterialBase.h"
 #include "MaterialWarehouse.h"
 
-#include "libmesh/quadrature.h"
-#include "libmesh/elem.h"
-#include "libmesh/point.h"
+#include <libmesh/quadrature.h>
+#include <libmesh/elem.h>
+#include <libmesh/point.h>
 
 namespace Moose
 {

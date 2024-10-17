@@ -13,7 +13,7 @@
 #include "SurrogateModelInterface.h"
 
 #include "PolynomialChaos.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 class PolynomialChaosReporter : public GeneralReporter, public SurrogateModelInterface
 {

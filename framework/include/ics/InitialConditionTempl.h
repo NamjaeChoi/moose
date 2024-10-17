@@ -12,9 +12,9 @@
 #include "InitialConditionBase.h"
 
 // libMesh
-#include "libmesh/point.h"
-#include "libmesh/vector_value.h"
-#include "libmesh/elem.h"
+#include <libmesh/point.h>
+#include <libmesh/vector_value.h>
+#include <libmesh/elem.h>
 
 // forward declarations
 class FEProblemBase;

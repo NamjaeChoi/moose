@@ -11,7 +11,7 @@
 
 #include "FunctorRelationshipManager.h"
 
-#include "libmesh/default_coupling.h"
+#include <libmesh/default_coupling.h>
 
 namespace libMesh
 {

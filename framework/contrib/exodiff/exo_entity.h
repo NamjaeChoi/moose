@@ -34,7 +34,7 @@
 #ifndef EXO_ENTITY_H
 #define EXO_ENTITY_H
 
-#include "libmesh/exodusII.h"
+#include <libmesh/exodusII.h>
 #include <iostream>
 #include <string>
 #include <vector>

@@ -19,8 +19,8 @@
 #include "MooseError.h"
 #include "MooseRandom.h"
 
-#include "libmesh/parallel.h"
-#include "libmesh/parallel_sync.h"
+#include <libmesh/parallel.h>
+#include <libmesh/parallel_sync.h>
 
 #include <memory>
 #include <vector>

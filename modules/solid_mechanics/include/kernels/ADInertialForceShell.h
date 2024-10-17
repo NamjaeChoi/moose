@@ -12,7 +12,7 @@
 #include "ADTimeKernel.h"
 #include "Material.h"
 #include "RankTwoTensor.h"
-#include "libmesh/dense_vector.h"
+#include <libmesh/dense_vector.h>
 
 namespace libMesh
 {

@@ -13,7 +13,7 @@
 #include "MooseError.h"
 #include "MooseTypes.h"
 
-#include "libmesh/parsed_function.h"
+#include <libmesh/parsed_function.h>
 
 // C++ includes
 #include <string>

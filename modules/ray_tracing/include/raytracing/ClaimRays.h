@@ -20,9 +20,9 @@
 #include <unordered_map>
 
 // libMesh includes
-#include "libmesh/bounding_box.h"
-#include "libmesh/parallel_object.h"
-#include "libmesh/point_locator_base.h"
+#include <libmesh/bounding_box.h>
+#include <libmesh/parallel_object.h>
+#include <libmesh/point_locator_base.h>
 
 // Forward declarations
 class RayTracingStudy;

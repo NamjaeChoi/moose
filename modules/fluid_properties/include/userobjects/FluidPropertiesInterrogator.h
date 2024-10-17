@@ -10,7 +10,7 @@
 #pragma once
 
 #include "GeneralUserObject.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 class FluidProperties;
 class SinglePhaseFluidProperties;

@@ -15,7 +15,7 @@
 #include "MooseVariable.h"
 #include "UserObject.h"
 
-#include "libmesh/quadrature.h"
+#include <libmesh/quadrature.h>
 
 #include "FunctionSeries.h"
 #include "MutableCoefficientsInterface.h"

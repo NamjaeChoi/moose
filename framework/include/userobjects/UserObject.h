@@ -26,7 +26,7 @@
 #include "PerfGraphInterface.h"
 #include "SamplerInterface.h"
 
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 class FEProblemBase;
 class SubProblem;

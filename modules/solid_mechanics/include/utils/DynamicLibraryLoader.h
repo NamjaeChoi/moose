@@ -10,7 +10,7 @@
 #pragma once
 
 #include "MooseError.h"
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 #include <string>
 
 #ifdef LIBMESH_HAVE_DLOPEN

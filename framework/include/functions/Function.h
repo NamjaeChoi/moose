@@ -21,7 +21,7 @@
 #include "ChainedReal.h"
 
 // libMesh
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 // libMesh forward declarations
 namespace libMesh

@@ -11,7 +11,7 @@
 
 #include "MooseTypes.h"
 
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * This namespace provides efficient algorithms for quickly hashing different types for checking

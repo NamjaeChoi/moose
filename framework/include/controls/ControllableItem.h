@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/parameters.h"
+#include <libmesh/parameters.h>
 #include "MooseObjectParameterName.h"
 #include "MooseError.h"
 #include "ControlOutput.h"

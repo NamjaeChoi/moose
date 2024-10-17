@@ -10,7 +10,7 @@
 #pragma once
 
 #include "ADKernel.h"
-#include "libmesh/quadrature_gauss.h"
+#include <libmesh/quadrature_gauss.h>
 #include "ADRankTwoTensorForward.h"
 #include "ADRankFourTensorForward.h"
 

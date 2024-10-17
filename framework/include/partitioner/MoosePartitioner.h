@@ -13,7 +13,7 @@
 #include "MooseObject.h"
 #include "Restartable.h"
 
-#include "libmesh/partitioner.h"
+#include <libmesh/partitioner.h>
 
 /**
  * Base class for MOOSE partitioner

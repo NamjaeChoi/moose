@@ -10,7 +10,7 @@
 #pragma once
 
 #include "ADReal.h"
-#include "metaphysicl/raw_type.h"
+#include <metaphysicl/raw_type.h>
 
 namespace Eigen
 {
@@ -48,9 +48,9 @@ abs(const MetaPhysicL::DualNumber<V, D, asd> & a)
 
 // this include _must_ come after the Eigen::internal overloads above. We also ignore a warning
 // about an Eigen internal use of a potentially uninitialized variable
-#include "libmesh/ignore_warnings.h"
+#include <libmesh/ignore_warnings.h>
 #include <Eigen/Core>
-#include "libmesh/restore_warnings.h"
+#include <libmesh/restore_warnings.h>
 
 // Eigen needs this
 namespace MetaPhysicL

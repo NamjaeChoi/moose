@@ -17,7 +17,7 @@ class GeometricalComponent;
 
 #include "MooseObject.h"
 #include "NamingInterface.h"
-#include "libmesh/fe_type.h"
+#include <libmesh/fe_type.h>
 
 /**
  * Provides functions to setup the heat conduction model.

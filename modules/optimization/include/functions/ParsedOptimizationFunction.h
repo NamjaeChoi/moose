@@ -12,7 +12,7 @@
 #include "OptimizationFunction.h"
 #include "ReporterInterface.h"
 
-#include "libmesh/fparser_ad.hh"
+#include <libmesh/fparser_ad.hh>
 
 class ParsedOptimizationFunction : public OptimizationFunction, public ReporterInterface
 {

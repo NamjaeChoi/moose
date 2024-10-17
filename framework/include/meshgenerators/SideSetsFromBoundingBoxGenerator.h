@@ -11,7 +11,7 @@
 
 #include "SideSetsGeneratorBase.h"
 #include "MooseEnum.h"
-#include "libmesh/bounding_box.h"
+#include <libmesh/bounding_box.h>
 
 /**
  * MeshGenerator for defining sidesets inside or outside of a bounding box

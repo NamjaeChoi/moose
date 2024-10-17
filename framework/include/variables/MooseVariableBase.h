@@ -17,8 +17,8 @@
 #include "MooseArray.h"
 #include "MooseError.h"
 
-#include "libmesh/fe_type.h"
-#include "libmesh/enum_fe_family.h"
+#include <libmesh/fe_type.h>
+#include <libmesh/enum_fe_family.h>
 
 // libMesh forward declarations
 namespace libMesh

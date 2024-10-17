@@ -11,7 +11,7 @@
 
 #include "Moose.h"
 #include "MooseObject.h"
-#include "libmesh/communicator.h"
+#include <libmesh/communicator.h>
 
 /**
  * Mix-in class for querying memory metrics used by MemoryUsage and VectorMemoryUsage

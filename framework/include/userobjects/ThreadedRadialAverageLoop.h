@@ -11,7 +11,7 @@
 
 #include "RadialAverage.h"
 
-#include "libmesh/nanoflann.hpp"
+#include <libmesh/nanoflann.hpp>
 
 using QPDataRange =
     StoredRange<std::vector<RadialAverage::QPData>::const_iterator, RadialAverage::QPData>;

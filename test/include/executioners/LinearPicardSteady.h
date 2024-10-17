@@ -11,7 +11,7 @@
 
 #include "Executioner.h"
 #include "PetscSupport.h"
-#include "libmesh/solver_configuration.h"
+#include <libmesh/solver_configuration.h>
 
 // Forward declarations
 class InputParameters;

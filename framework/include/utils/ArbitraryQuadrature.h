@@ -12,7 +12,7 @@
 // MOOSE includes
 #include "Moose.h" // using namespace libMesh
 
-#include "libmesh/quadrature.h"
+#include <libmesh/quadrature.h>
 
 /**
  * Implements a fake quadrature rule where you can specify the locations

@@ -10,7 +10,7 @@
 #pragma once
 
 #include "NodalBC.h"
-#include "libmesh/numeric_vector.h"
+#include <libmesh/numeric_vector.h>
 
 // libMesh forward declarations
 namespace libMesh

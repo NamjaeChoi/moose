@@ -11,7 +11,7 @@
 
 #include <vector>
 
-#include "libmesh/libmesh_common.h"
+#include <libmesh/libmesh_common.h>
 
 using libMesh::Real;
 

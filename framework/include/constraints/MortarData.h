@@ -12,7 +12,7 @@
 #include "AutomaticMortarGeneration.h"
 #include "MooseHashing.h"
 
-#include "libmesh/parallel_object.h"
+#include <libmesh/parallel_object.h>
 
 #include <unordered_map>
 #include <set>

@@ -12,7 +12,7 @@
 #include "MooseMesh.h"
 #include "MooseApp.h"
 
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * Peridynamics mesh class

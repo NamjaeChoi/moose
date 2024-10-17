@@ -12,7 +12,7 @@
 // MOOSE includes
 #include "MooseEnum.h"
 #include "MooseTypes.h"
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 #include "RankTwoTensor.h"
 #include "MooseError.h"
 #include "MooseUtils.h"

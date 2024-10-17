@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/mesh.h"
+#include <libmesh/mesh.h>
 
 namespace libMesh
 {

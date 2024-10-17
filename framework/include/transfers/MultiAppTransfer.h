@@ -15,7 +15,7 @@
 #include "MultiApp.h"
 #include "MooseAppCoordTransform.h"
 
-#include "libmesh/bounding_box.h"
+#include <libmesh/bounding_box.h>
 
 class MooseMesh;
 

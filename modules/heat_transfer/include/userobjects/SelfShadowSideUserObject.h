@@ -11,7 +11,7 @@
 
 #include "SideUserObject.h"
 #include <vector>
-#include "libmesh/data_type.h"
+#include <libmesh/data_type.h>
 
 /**
  * Given a radiation direction vector this user object computes the illumination state of each side

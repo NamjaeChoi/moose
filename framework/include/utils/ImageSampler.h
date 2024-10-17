@@ -13,7 +13,7 @@
 #include "FileRangeBuilder.h"
 #include "ConsoleStream.h"
 
-#include "libmesh/bounding_box.h"
+#include <libmesh/bounding_box.h>
 #include <array>
 
 // VTK includes
@@ -21,7 +21,7 @@
 
 // Some VTK header files have extra semi-colons in them, and clang
 // loves to warn about it...
-#include "libmesh/ignore_warnings.h"
+#include <libmesh/ignore_warnings.h>
 
 #include "vtkSmartPointer.h"
 #include "vtkPNGReader.h"
@@ -35,7 +35,7 @@
 #include "vtkImageMagnitude.h"
 #include "vtkImageFlip.h"
 
-#include "libmesh/restore_warnings.h"
+#include <libmesh/restore_warnings.h>
 
 #endif
 

@@ -12,7 +12,7 @@
 #include "GeneralPostprocessor.h"
 #include "CrackFrontDefinition.h"
 // libMesh
-#include "libmesh/node.h"
+#include <libmesh/node.h>
 
 class MooseMesh;
 

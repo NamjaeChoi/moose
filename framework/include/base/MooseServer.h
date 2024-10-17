@@ -13,9 +13,9 @@
 #include "wasplsp/LSP.h"
 #include "wasplsp/ServerImpl.h"
 #include "wasplsp/Connection.h"
-#include "libmesh/ignore_warnings.h"
+#include <libmesh/ignore_warnings.h>
 #include "wasplsp/IOStreamConnection.h"
-#include "libmesh/restore_warnings.h"
+#include <libmesh/restore_warnings.h>
 #include "waspcore/Object.h"
 #include "wasphit/HITNodeView.h"
 #include "waspsiren/SIRENInterpreter.h"

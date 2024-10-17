@@ -9,7 +9,7 @@
 
 #include "MooseTypes.h"
 
-#include "libmesh/parallel.h"
+#include <libmesh/parallel.h>
 
 namespace THM
 {

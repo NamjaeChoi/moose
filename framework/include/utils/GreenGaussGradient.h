@@ -15,7 +15,7 @@
 #include "MooseMeshUtils.h"
 #include "VectorComponentFunctor.h"
 #include "ArrayComponentFunctor.h"
-#include "libmesh/elem.h"
+#include <libmesh/elem.h>
 
 namespace Moose
 {

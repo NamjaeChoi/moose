@@ -12,8 +12,8 @@
 // MOOSE includes
 #include "ThreadedNodeLoop.h"
 
-#include "libmesh/node_range.h"
-#include "libmesh/numeric_vector.h"
+#include <libmesh/node_range.h>
+#include <libmesh/numeric_vector.h>
 
 // Forward declarations
 class DisplacedProblem;

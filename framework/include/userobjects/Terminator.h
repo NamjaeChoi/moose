@@ -9,12 +9,12 @@
 
 #pragma once
 
-#include "libmesh/libmesh_config.h"
+#include <libmesh/libmesh_config.h>
 
 #ifdef LIBMESH_HAVE_FPARSER
 
 #include "GeneralUserObject.h"
-#include "libmesh/fparser.hh"
+#include <libmesh/fparser.hh>
 
 /**
  * This Userobject requests termination of the current solve based on

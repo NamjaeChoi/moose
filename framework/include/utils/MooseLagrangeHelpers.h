@@ -10,7 +10,7 @@
 #pragma once
 
 #include "MooseError.h"
-#include "libmesh/fe_type.h"
+#include <libmesh/fe_type.h>
 
 namespace Moose
 {

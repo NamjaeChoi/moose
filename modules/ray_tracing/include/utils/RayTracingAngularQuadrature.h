@@ -13,8 +13,8 @@
 #include "MooseTypes.h"
 
 // libMesh includes
-#include "libmesh/dense_matrix.h"
-#include "libmesh/point.h"
+#include <libmesh/dense_matrix.h>
+#include <libmesh/point.h>
 
 class RayTracingAngularQuadrature
 {

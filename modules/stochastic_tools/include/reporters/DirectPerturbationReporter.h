@@ -12,7 +12,7 @@
 #include "GeneralReporter.h"
 #include "VectorCalculators.h"
 
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 // Forward declaration
 class DirectPerturbationSampler;

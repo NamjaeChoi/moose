@@ -10,9 +10,9 @@
 #pragma once
 
 #include "MooseTypes.h"
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 // Ignore depcrecated copy warnings for this class from libmesh Eigen contrib
-#include "libmesh/ignore_warnings.h"
+#include <libmesh/ignore_warnings.h>
 #include <Eigen/Geometry>
 
 // forward declaration
@@ -40,4 +40,4 @@ public:
 };
 
 // Restore warnings for other classes
-#include "libmesh/restore_warnings.h"
+#include <libmesh/restore_warnings.h>

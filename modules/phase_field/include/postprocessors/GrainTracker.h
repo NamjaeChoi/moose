@@ -12,7 +12,7 @@
 #include "FeatureFloodCount.h"
 #include "GrainTrackerInterface.h"
 
-#include "libmesh/bounding_box.h"
+#include <libmesh/bounding_box.h>
 
 class PolycrystalUserObjectBase;
 struct GrainDistance;

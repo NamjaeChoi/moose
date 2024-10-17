@@ -11,7 +11,7 @@
 
 #include "GeneralUserObject.h"
 
-#include "libmesh/ghosting_functor.h"
+#include <libmesh/ghosting_functor.h>
 
 #include <unordered_map>
 

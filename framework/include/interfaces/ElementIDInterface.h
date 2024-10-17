@@ -15,7 +15,7 @@
 #include "MooseObject.h"
 #include "MooseMesh.h"
 
-#include "libmesh/elem.h"
+#include <libmesh/elem.h>
 
 class InputParameters;
 class MooseObject;

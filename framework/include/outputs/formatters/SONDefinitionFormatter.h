@@ -8,7 +8,7 @@
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
 #pragma once
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 #include <map>
 #include <string>
 #include <vector>

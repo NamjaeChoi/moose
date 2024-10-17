@@ -12,7 +12,7 @@
 // MOOSE includes
 #include "Moose.h"
 
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 // libMesh forward declarations
 namespace libMesh

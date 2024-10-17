@@ -10,7 +10,7 @@
 #pragma once
 
 #include "MeshGenerator.h"
-#include "libmesh/point.h"
+#include <libmesh/point.h>
 
 /**
  * Create a sphere surface mesh based on the recursive subdivision of the faces

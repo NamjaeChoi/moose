@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/petsc_macro.h"
+#include <libmesh/petsc_macro.h>
 
 // PETSc includes
 #include <petscdm.h>

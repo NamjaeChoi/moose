@@ -10,7 +10,7 @@
 #pragma once
 
 #include "Moose.h"
-#include "libmesh/libmesh.h"
+#include <libmesh/libmesh.h>
 #include "InitialCondition.h"
 
 namespace PolycrystalICTools

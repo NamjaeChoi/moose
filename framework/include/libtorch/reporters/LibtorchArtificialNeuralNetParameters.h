@@ -14,7 +14,7 @@
 #include <torch/torch.h>
 #include "LibtorchArtificialNeuralNet.h"
 #include "GeneralReporter.h"
-#include "nlohmann/json.h"
+#include <nlohmann/json.h>
 
 /**
  * A Reporter which can print the parameter values of a

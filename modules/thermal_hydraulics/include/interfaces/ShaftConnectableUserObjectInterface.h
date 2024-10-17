@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "libmesh/dense_matrix.h"
+#include <libmesh/dense_matrix.h>
 #include "InputParameters.h"
 
 using namespace libMesh;

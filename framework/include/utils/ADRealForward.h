@@ -10,8 +10,8 @@
 #pragma once
 
 #include "MooseConfig.h"
-#include "libmesh/libmesh_common.h"
-#include "metaphysicl/metaphysicl_version.h"
+#include <libmesh/libmesh_common.h>
+#include <metaphysicl/metaphysicl_version.h>
 
 #if METAPHYSICL_MAJOR_VERSION < 1
 namespace MetaPhysicL
@@ -20,7 +20,7 @@ template <typename, typename>
 class DualNumber;
 }
 #else
-#include "metaphysicl/dualnumber_forward.h"
+#include <metaphysicl/dualnumber_forward.h>
 #endif
 
 namespace MetaPhysicL

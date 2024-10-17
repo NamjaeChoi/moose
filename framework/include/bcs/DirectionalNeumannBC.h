@@ -11,7 +11,7 @@
 
 #include "IntegratedBC.h"
 
-#include "libmesh/vector_value.h"
+#include <libmesh/vector_value.h>
 
 /**
  * Implements a flux boundary condition grad(u).n = V.n, where the

@@ -16,16 +16,16 @@
 #include "RankTwoTensor.h"
 #include "MooseMesh.h"
 
-#include "libmesh/dof_object.h"
+#include <libmesh/dof_object.h>
 
-#include "metaphysicl/parallel_dualnumber.h"
-#include "metaphysicl/parallel_semidynamicsparsenumberarray.h"
+#include <metaphysicl/parallel_dualnumber.h>
+#include <metaphysicl/parallel_semidynamicsparsenumberarray.h>
 
-#include "timpi/parallel_sync.h"
-#include "timpi/communicator.h"
-#include "libmesh/data_type.h"
-#include "libmesh/parallel_algebra.h"
-#include "timpi/parallel_sync.h"
+#include <timpi/parallel_sync.h>
+#include <timpi/communicator.h>
+#include <libmesh/data_type.h>
+#include <libmesh/parallel_algebra.h>
+#include <timpi/parallel_sync.h>
 
 #include <utility>
 #include <array>

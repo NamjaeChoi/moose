@@ -11,7 +11,7 @@
 
 #include "FVScalarLagrangeMultiplierConstraint.h"
 
-#include "libmesh/enum_point_locator_type.h"
+#include <libmesh/enum_point_locator_type.h>
 
 /**
  * This Kernel implements the residuals that enforce the constraint

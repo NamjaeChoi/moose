@@ -13,7 +13,7 @@
 #include "RankTwoTensor.h"
 
 // libmesh includes
-#include "libmesh/dense_vector.h"
+#include <libmesh/dense_vector.h>
 
 class Assembly;
 class InputParameters;

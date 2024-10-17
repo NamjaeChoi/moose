@@ -810,6 +810,9 @@ public:
   virtual void addKernel(const std::string & kernel_name,
                          const std::string & name,
                          InputParameters & parameters);
+  virtual void addCEEDKernel(const std::string & kernel_name,
+                             const std::string & name,
+                             InputParameters & parameters);
   virtual void addHDGKernel(const std::string & kernel_name,
                             const std::string & name,
                             InputParameters & parameters);

@@ -136,6 +136,18 @@ public:
                          const std::string & name,
                          InputParameters & parameters);
 
+#ifndef MOOSE_IGNORE_LIBCEED
+  /**
+   * Adds a CEED kernel
+   * @param kernel_name The type of the kernel
+   * @param name The name of the kernel
+   * @param parameters Kernel parameters
+   */
+  virtual void addCEEDKernel(const std::string & kernel_name,
+                             const std::string & name,
+                             InputParameters & parameters);
+#endif
+
   /**
    * Adds a hybridized discontinuous Galerkin (HDG) kernel
    * @param kernel_name The type of the hybridized kernel
@@ -606,6 +618,11 @@ public:
    */
   MooseObjectTagWarehouse<KernelBase> & getKernelWarehouse() { return _kernels; }
   const MooseObjectTagWarehouse<KernelBase> & getKernelWarehouse() const { return _kernels; }
+  MooseObjectTagWarehouse<ResidualObject> & getCEEDKernelWarehouse() { return _ceed_kernels; }
+  const MooseObjectTagWarehouse<ResidualObject> & getCEEDKernelWarehouse() const
+  {
+    return _ceed_kernels;
+  }
   MooseObjectTagWarehouse<DGKernelBase> & getDGKernelWarehouse() { return _dg_kernels; }
   MooseObjectTagWarehouse<InterfaceKernelBase> & getInterfaceKernelWarehouse()
   {
@@ -730,6 +747,14 @@ protected:
    * @param tags The tags of kernels for which the residual is to be computed.
    */
   void computeResidualInternal(const std::set<TagID> & tags);
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  /**
+   * Compute the residual for a given tag with CEED
+   * @param tags The tags of kernels for which the residual is to be computed.
+   */
+  void computeCEEDResidual(const std::set<TagID> & tags);
+#endif
 
   /**
    * Enforces nodal boundary conditions. The boundary condition will be implemented
@@ -856,6 +881,7 @@ protected:
   ///@{
   /// Kernel Storage
   MooseObjectTagWarehouse<KernelBase> _kernels;
+  MooseObjectTagWarehouse<ResidualObject> _ceed_kernels;
   MooseObjectWarehouse<HDGKernel> _hybridized_kernels;
   MooseObjectTagWarehouse<ScalarKernelBase> _scalar_kernels;
   MooseObjectTagWarehouse<DGKernelBase> _dg_kernels;

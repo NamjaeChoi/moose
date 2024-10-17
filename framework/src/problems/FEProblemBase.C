@@ -2750,6 +2750,31 @@ FEProblemBase::addKernel(const std::string & kernel_name,
 }
 
 void
+FEProblemBase::addCEEDKernel(const std::string & kernel_name,
+                             const std::string & name,
+                             InputParameters & parameters)
+{
+#ifdef MOOSE_IGNORE_LIBCEED
+  mooseError("addCEEDKernel() was called but MOOSE was not compiled with CEED support.");
+#endif
+
+  parallel_object_only();
+
+  const auto nl_sys_num = determineSolverSystem(parameters.varName("variable", name), true).second;
+  if (!isSolverSystemNonlinear(nl_sys_num))
+    mooseError("You are trying to add a Kernel to a linear variable/system, which is not "
+               "supported at the moment!");
+  setResidualObjectParamsAndLog(
+      kernel_name, name, parameters, nl_sys_num, "CEEDKernel", _reinit_displaced_elem);
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  _nl[nl_sys_num]->addCEEDKernel(kernel_name, name, parameters);
+#endif
+
+  _have_ceed_objects = true;
+}
+
+void
 FEProblemBase::addHDGKernel(const std::string & kernel_name,
                             const std::string & name,
                             InputParameters & parameters)

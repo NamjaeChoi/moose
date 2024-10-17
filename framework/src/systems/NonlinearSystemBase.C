@@ -122,6 +122,7 @@ NonlinearSystemBase::NonlinearSystemBase(FEProblemBase & fe_problem,
     _Re_time(NULL),
     _Re_non_time_tag(-1),
     _Re_non_time(NULL),
+    _ceed_kernels(/*threaded=*/false),
     _scalar_kernels(/*threaded=*/false),
     _nodal_bcs(/*threaded=*/false),
     _preset_nodal_bcs(/*threaded=*/false),
@@ -244,6 +245,7 @@ NonlinearSystemBase::initialSetup()
       }
     }
 
+    _ceed_kernels.initialSetup();
     _scalar_kernels.initialSetup();
     _constraints.initialSetup();
     _general_dampers.initialSetup();
@@ -346,6 +348,8 @@ NonlinearSystemBase::timestepSetup()
         kernel->timestepSetup();
     }
   }
+
+  _ceed_kernels.timestepSetup();
   _scalar_kernels.timestepSetup();
   _constraints.timestepSetup();
   _general_dampers.timestepSetup();
@@ -400,6 +404,8 @@ NonlinearSystemBase::customSetup(const ExecFlagType & exec_type)
         kernel->customSetup(exec_type);
     }
   }
+
+  _ceed_kernels.customSetup(exec_type);
   _scalar_kernels.customSetup(exec_type);
   _constraints.customSetup(exec_type);
   _general_dampers.customSetup(exec_type);
@@ -1686,6 +1692,8 @@ NonlinearSystemBase::residualSetup()
     _nodal_dampers.residualSetup(tid);
     _integrated_bcs.residualSetup(tid);
   }
+
+  _ceed_kernels.residualSetup();
   _scalar_kernels.residualSetup();
   _constraints.residualSetup();
   _general_dampers.residualSetup();
@@ -1705,6 +1713,11 @@ NonlinearSystemBase::computeResidualInternal(const std::set<TagID> & tags)
   TIME_SECTION("computeResidualInternal", 3);
 
   residualSetup();
+
+#ifdef MOOSE_HAVE_LIBCEED
+  if (_fe_problem.hasCEEDObjects())
+    computeCEEDResidual(tags);
+#endif
 
   const auto vector_tag_data = _fe_problem.getVectorTags(tags);
 
@@ -2757,6 +2770,8 @@ NonlinearSystemBase::jacobianSetup()
     _nodal_dampers.jacobianSetup(tid);
     _integrated_bcs.jacobianSetup(tid);
   }
+
+  _ceed_kernels.jacobianSetup();
   _scalar_kernels.jacobianSetup();
   _constraints.jacobianSetup();
   _general_dampers.jacobianSetup();
@@ -3279,6 +3294,7 @@ NonlinearSystemBase::updateActive(THREAD_ID tid)
     _ad_preset_nodal_bcs.updateActive();
     _constraints.updateActive();
     _scalar_kernels.updateActive();
+    _ceed_kernels.updateActive();
   }
 }
 
@@ -3568,6 +3584,7 @@ NonlinearSystemBase::checkKernelCoverage(const std::set<SubdomainID> & mesh_subd
   global_kernels_exist |= _nodal_kernels.hasActiveObjects();
 
   _kernels.subdomainsCovered(input_subdomains, kernel_variables);
+  _ceed_kernels.subdomainsCovered(input_subdomains, kernel_variables);
   _dg_kernels.subdomainsCovered(input_subdomains, kernel_variables);
   _nodal_kernels.subdomainsCovered(input_subdomains, kernel_variables);
   _scalar_kernels.subdomainsCovered(input_subdomains, kernel_variables);

@@ -463,6 +463,7 @@ associateSyntaxInner(Syntax & syntax, ActionFactory & /*action_factory*/)
   registerSyntaxTask("CopyNodalVarsAction", "AuxVariables/*", "copy_nodal_aux_vars");
 
   registerSyntaxTask("AddKernelAction", "Kernels/*", "add_kernel");
+  registerSyntaxTask("AddCEEDKernelAction", "CEEDKernels/*", "add_kernel");
   registerSyntaxTask("AddNodalKernelAction", "NodalKernels/*", "add_nodal_kernel");
   registerSyntaxTask("AddKernelAction", "AuxKernels/*", "add_aux_kernel");
 

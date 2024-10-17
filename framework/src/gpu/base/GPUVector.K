@@ -1,0 +1,250 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
+#ifndef MOOSE_IGNORE_LIBCEED
+
+#include "GPUVector.h"
+#include "CEEDSystem.h"
+
+// #define GPU_ASSEMBLY
+
+void
+GPUVector::MPIBuffer::create(const GPUArray<GPUArray<libMesh::dof_id_type>> & list)
+{
+  this->list = list;
+
+  count.createHost(list.size());
+  offset.create(list.size() + 1);
+  offset = 0;
+
+  for (unsigned int i = 0; i < list.size(); ++i)
+  {
+    count[i] = list[i].size();
+    offset[i + 1] = offset[i] + count[i];
+  }
+
+  offset.copy();
+
+  buffer.createDevice(offset.last());
+}
+
+void
+GPUVector::MPIBuffer::destroy()
+{
+  list.destroy();
+  count.destroy();
+  offset.destroy();
+  buffer.destroy();
+}
+
+void
+GPUVector::create(libMesh::NumericVector<PetscScalar> & vector,
+                  const CEEDSystem & system,
+                  bool assemble)
+{
+  auto petsc_vector = dynamic_cast<libMesh::PetscVector<PetscScalar> *>(&vector);
+
+  mooseAssert(petsc_vector, "GPUVector error: provided vector is not a PetscVector.");
+
+  PetscScalar * array;
+  PetscMemType mtype;
+  LibmeshPetscCall(VecGhostGetLocalForm(petsc_vector->vec(), &_local_vector));
+  LibmeshPetscCall(
+      VecGetArrayAndMemType(_local_vector ? _local_vector : petsc_vector->vec(), &array, &mtype));
+
+  auto is_host = mtype == PETSC_MEMTYPE_HOST;
+  auto is_ghosted = vector.type() == libMesh::ParallelType::GHOSTED;
+  bool realloc =
+      !_is_alloc || _assemble != assemble || _is_host != is_host || _is_ghosted != is_ghosted;
+
+  _vector = petsc_vector->vec();
+  _array = array;
+  _system = &system;
+  _assemble = assemble;
+  _is_host = is_host;
+  _is_ghosted = is_ghosted;
+
+  if (realloc)
+  {
+    _comm = nullptr;
+    _send.destroy();
+    _recv.destroy();
+    _data.destroy();
+
+    CeedVectorDestroy(&_ceed_vector);
+  }
+
+  if (assemble)
+  {
+    if (realloc)
+    {
+#ifdef GPU_ASSEMBLY
+      _comm = &_system->getComm();
+      _send.create(_system->getGhostCommList());
+      _recv.create(_system->getLocalCommList());
+#endif
+      _data.createDevice(_system->getNumLocalDofs() + _system->getNumGhostDofs());
+    }
+  }
+  else
+  {
+    if (!_is_host)
+    {
+      if (realloc)
+        _data.init(_is_ghosted ? _system->getNumLocalDofs() + _system->getNumGhostDofs()
+                               : _system->getNumLocalDofs());
+
+      _data.aliasDevice(_array);
+    }
+    else
+    {
+      if (realloc)
+        _data.createDevice(_is_ghosted ? _system->getNumLocalDofs() + _system->getNumGhostDofs()
+                                       : _system->getNumLocalDofs());
+
+      _data.aliasHost(_array);
+    }
+  }
+
+  CeedVectorCreate(_system->getCeed(), _data.size(), &_ceed_vector);
+  CeedVectorSetArray(_ceed_vector, CEED_MEM_DEVICE, CEED_USE_POINTER, _data.device_data());
+
+  _is_alloc = true;
+}
+
+void
+GPUVector::copy(GPUMemcpyKind dir)
+{
+  if (_assemble)
+    mooseError("GPUVector error: copy() should not be called for an assembled vector.");
+
+  if (_is_alloc && _is_host)
+    _data.copy(dir);
+}
+
+void
+GPUVector::destroy()
+{
+  if (!_is_alloc)
+    return;
+
+  _local_vector = PETSC_NULLPTR;
+  _vector = PETSC_NULLPTR;
+  _array = PETSC_NULLPTR;
+  _system = nullptr;
+  _comm = nullptr;
+
+  CeedVectorDestroy(&_ceed_vector);
+
+  _send.destroy();
+  _recv.destroy();
+  _data.destroy();
+
+  _assemble = false;
+  _is_ghosted = false;
+  _is_host = false;
+  _is_alloc = false;
+}
+
+void
+GPUVector::restore()
+{
+  LibmeshPetscCall(
+      VecRestoreArrayAndMemType(_local_vector ? _local_vector : _vector, PETSC_NULLPTR));
+  LibmeshPetscCall(VecGhostRestoreLocalForm(_vector, &_local_vector));
+}
+
+void
+GPUVector::close()
+{
+  if (!_assemble)
+    mooseError("GPUVector error: close() should not be called for a non-assembled vector.");
+
+  if (!_is_alloc)
+    return;
+
+#ifdef GPU_ASSEMBLY
+
+  // Pack data into send buffer
+
+  for (_current_proc = 0; _current_proc < _comm->size(); ++_current_proc)
+  {
+    Kokkos::RangePolicy<PackBuffer, Kokkos::IndexType<PetscCount>> policy(
+        0, _send.count[_current_proc]);
+    Kokkos::parallel_for(policy, *this);
+  }
+
+  Kokkos::fence();
+
+  // Perform MPI communications
+
+  MPI_Alltoallv(_send.buffer.device_data(),
+                _send.count.data(),
+                _send.offset.data(),
+                MPIU_SCALAR,
+                _recv.buffer.device_data(),
+                _recv.count.data(),
+                _recv.offset.data(),
+                MPIU_SCALAR,
+                _comm->get());
+
+  // Unpack data from receive buffer
+
+  for (_current_proc = 0; _current_proc < _comm->size(); ++_current_proc)
+  {
+    Kokkos::RangePolicy<UnpackBuffer, Kokkos::IndexType<PetscCount>> policy(
+        0, _recv.count[_current_proc]);
+    Kokkos::parallel_for(policy, *this);
+  }
+
+  Kokkos::fence();
+
+#else
+
+  std::vector<PetscScalar> ghost(_system->getNumGhostDofs());
+
+  _data.copyOut(ghost.data(),
+                GPUMemcpyKind::DEVICE_TO_HOST,
+                _system->getNumGhostDofs(),
+                _system->getNumLocalDofs());
+
+  LibmeshPetscCall(
+      VecSetValues(_vector,
+                   _system->getNumGhostDofs(),
+                   reinterpret_cast<const PetscInt *>(_system->getDofMap().get_send_list().data()),
+                   ghost.data(),
+                   ADD_VALUES));
+
+#endif
+
+  // Copy to the PETSc vector
+
+  if (_is_host)
+    _data.copyOut(_array, GPUMemcpyKind::DEVICE_TO_HOST, _system->getNumLocalDofs());
+  else
+    _data.copyOut(_array, GPUMemcpyKind::DEVICE_TO_DEVICE, _system->getNumLocalDofs());
+
+  // Restore the PETSc vector
+
+  restore();
+}
+
+KOKKOS_FUNCTION void
+GPUVector::operator()(PackBuffer, const PetscCount tid) const
+{
+  _send.buffer[_send.offset[_current_proc] + tid] = _data[_send.list[_current_proc][tid]];
+}
+
+KOKKOS_FUNCTION void
+GPUVector::operator()(UnpackBuffer, const PetscCount tid) const
+{
+  _data[_recv.list[_current_proc][tid]] += _recv.buffer[_recv.offset[_current_proc] + tid];
+}
+
+#endif

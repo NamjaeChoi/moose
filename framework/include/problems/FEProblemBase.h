@@ -9,6 +9,11 @@
 
 #pragma once
 
+#ifndef MOOSE_IGNORE_LIBCEED
+#include "CEEDAssembly.h"
+#include "CEEDSystem.h"
+#endif
+
 // MOOSE includes
 #include "SubProblem.h"
 #include "GeometricSearchData.h"
@@ -376,6 +381,11 @@ public:
   virtual Assembly & assembly(const THREAD_ID tid, const unsigned int sys_num) override;
   virtual const Assembly & assembly(const THREAD_ID tid, const unsigned int sys_num) const override;
 
+#ifndef MOOSE_IGNORE_LIBCEED
+  CEEDAssembly & ceedAssembly() { return _ceed_assembly; }
+  const CEEDAssembly & ceedAssembly() const { return _ceed_assembly; }
+#endif
+
   /**
    * Returns a list of all the variables in the problem (both from the NL and Aux systems.
    */
@@ -451,6 +461,10 @@ public:
 
   virtual void init() override;
   virtual void solve(const unsigned int nl_sys_num);
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  void initCEED();
+#endif
 
   /**
    * Build and solve a linear system
@@ -731,6 +745,11 @@ public:
   virtual SystemBase & systemBaseAuxiliary() override;
 
   virtual NonlinearSystem & getNonlinearSystem(const unsigned int sys_num);
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  GPUArray<CEEDSystem> & getCEEDSystems() { return _ceed_systems; }
+  const GPUArray<CEEDSystem> & getCEEDSystems() const { return _ceed_systems; }
+#endif
 
   /**
    * Get non-constant reference to a linear system
@@ -2375,6 +2394,8 @@ public:
    */
   const std::vector<NonlinearSystemName> & getNonlinearSystemNames() const { return _nl_sys_names; }
 
+  bool hasCEEDObjects() { return _have_ceed_objects; }
+
 protected:
   /// Create extra tagged vectors and matrices
   void createTagVectors();
@@ -2495,6 +2516,10 @@ protected:
   /// The auxiliary system
   std::shared_ptr<AuxiliarySystem> _aux;
 
+#ifndef MOOSE_IGNORE_LIBCEED
+  GPUArray<CEEDSystem> _ceed_systems;
+#endif
+
   Moose::CouplingType _coupling;                    ///< Type of variable coupling
   std::vector<std::unique_ptr<CouplingMatrix>> _cm; ///< Coupling matrix for variables.
 
@@ -2504,6 +2529,10 @@ protected:
   /// The Assembly objects. The first index corresponds to the thread ID and the second index
   /// corresponds to the nonlinear system number
   std::vector<std::vector<std::unique_ptr<Assembly>>> _assembly;
+
+#ifndef MOOSE_IGNORE_LIBCEED
+  CEEDAssembly _ceed_assembly;
+#endif
 
   /// Warehouse to store mesh divisions
   /// NOTE: this could probably be moved to the MooseMesh instead of the Problem
@@ -2918,6 +2947,9 @@ private:
   /// If we catch an exception during residual/Jacobian evaluaton for which we don't have specific
   /// handling, immediately error instead of allowing the time step to be cut
   const bool _regard_general_exceptions_as_errors;
+
+  /// Whether we have any CEED objects
+  bool _have_ceed_objects = false;
 
   friend void Moose::PetscSupport::setSinglePetscOption(const std::string & name,
                                                         const std::string & value,

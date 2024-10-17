@@ -1714,7 +1714,7 @@ NonlinearSystemBase::computeResidualInternal(const std::set<TagID> & tags)
 
   residualSetup();
 
-#ifdef MOOSE_HAVE_LIBCEED
+#ifndef MOOSE_IGNORE_LIBCEED
   if (_fe_problem.hasCEEDObjects())
     computeCEEDResidual(tags);
 #endif

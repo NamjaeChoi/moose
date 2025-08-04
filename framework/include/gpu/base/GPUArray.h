@@ -867,117 +867,6 @@ ArrayBase<T, dimension>::operator=(const T & scalar)
 
   return *this;
 }
-
-using ::dataStore;
-
-template <typename T, unsigned int dimension>
-void
-dataStore(std::ostream & stream, Array<T, dimension> & array, void * context)
-{
-  bool is_alloc = array.isAlloc();
-  dataStore(stream, is_alloc, nullptr);
-
-  if (!is_alloc)
-    return;
-
-  std::string type = typeid(T).name();
-  dataStore(stream, type, nullptr);
-
-  unsigned int dim = dimension;
-  dataStore(stream, dim, nullptr);
-
-  for (unsigned int dim = 0; dim < dimension; ++dim)
-  {
-    auto n = array.n(dim);
-    dataStore(stream, n, nullptr);
-  }
-
-  if (array.isDeviceAlloc())
-  {
-    // We use malloc/free because we just want a memory copy
-    // If T is a Kokkos array and we use new/delete or vector to copy it out,
-    // the arrays will be destroyed on cleanup
-
-    T * data = static_cast<T *>(std::malloc(array.size() * sizeof(T)));
-
-    array.copyOut(data, MemcpyKind::DEVICE_TO_HOST, array.size());
-
-    for (dof_id_type i = 0; i < array.size(); ++i)
-      dataStore(stream, data[i], context);
-
-    std::free(data);
-  }
-  else
-    for (auto & value : array)
-      dataStore(stream, value, context);
-}
-
-using ::dataLoad;
-
-template <typename T, unsigned int dimension>
-void
-dataLoad(std::istream & stream, Array<T, dimension> & array, void * context)
-{
-  bool is_alloc;
-  dataLoad(stream, is_alloc, nullptr);
-
-  if (!is_alloc)
-    return;
-
-  std::string from_type_name;
-  dataLoad(stream, from_type_name, nullptr);
-
-  if (from_type_name != typeid(T).name())
-    mooseError("Kokkos array error: cannot load an array because the stored array is of type '",
-               MooseUtils::prettyCppType(libMesh::demangle(from_type_name.c_str())),
-               "' but the loading array is of type '",
-               MooseUtils::prettyCppType(libMesh::demangle(typeid(T).name())),
-               "'.");
-
-  unsigned int from_dimension;
-  dataLoad(stream, from_dimension, nullptr);
-
-  if (from_dimension != dimension)
-    mooseError("Kokkos array error: cannot load an array because the stored array is ",
-               from_dimension,
-               "D but the loading array is ",
-               dimension,
-               "D.");
-
-  std::vector<dof_id_type> from_n(dimension);
-  std::vector<dof_id_type> n(dimension);
-
-  for (unsigned int dim = 0; dim < dimension; ++dim)
-  {
-    dataLoad(stream, from_n[dim], nullptr);
-    n[dim] = array.n(dim);
-  }
-
-  if (from_n != n)
-    mooseError("Kokkos array error: cannot load an array because the stored array has dimensions (",
-               Moose::stringify(from_n),
-               ") but the loading array has dimensions (",
-               Moose::stringify(n),
-               ").");
-
-  if (array.isHostAlloc())
-  {
-    for (auto & value : array)
-      dataLoad(stream, value, context);
-
-    if (array.isDeviceAlloc())
-      array.copyToDevice();
-  }
-  else
-  {
-    std::vector<T> data(array.size());
-
-    for (auto & value : data)
-      dataLoad(stream, value, context);
-
-    array.copyIn(data.data(), MemcpyKind::HOST_TO_DEVICE, array.size());
-  }
-}
 #endif
 
 /**
@@ -1609,3 +1498,114 @@ using Array5D = Array<T, 5>;
 
 } // namespace Kokkos
 } // namespace Moose
+
+#ifdef MOOSE_KOKKOS_SCOPE
+
+template <typename T, unsigned int dimension>
+void
+dataStore(std::ostream & stream, Moose::Kokkos::Array<T, dimension> & array, void * context)
+{
+  bool is_alloc = array.isAlloc();
+  dataStore(stream, is_alloc, nullptr);
+
+  if (!is_alloc)
+    return;
+
+  std::string type = typeid(T).name();
+  dataStore(stream, type, nullptr);
+
+  unsigned int dim = dimension;
+  dataStore(stream, dim, nullptr);
+
+  for (unsigned int dim = 0; dim < dimension; ++dim)
+  {
+    auto n = array.n(dim);
+    dataStore(stream, n, nullptr);
+  }
+
+  if (array.isDeviceAlloc())
+  {
+    // We use malloc/free because we just want a memory copy
+    // If T is a Kokkos array and we use new/delete or vector to copy it out,
+    // the arrays will be destroyed on cleanup
+
+    T * data = static_cast<T *>(std::malloc(array.size() * sizeof(T)));
+
+    array.copyOut(data, Moose::Kokkos::MemcpyKind::DEVICE_TO_HOST, array.size());
+
+    for (dof_id_type i = 0; i < array.size(); ++i)
+      dataStore(stream, data[i], context);
+
+    std::free(data);
+  }
+  else
+    for (auto & value : array)
+      dataStore(stream, value, context);
+}
+
+template <typename T, unsigned int dimension>
+void
+dataLoad(std::istream & stream, Moose::Kokkos::Array<T, dimension> & array, void * context)
+{
+  bool is_alloc;
+  dataLoad(stream, is_alloc, nullptr);
+
+  if (!is_alloc)
+    return;
+
+  std::string from_type_name;
+  dataLoad(stream, from_type_name, nullptr);
+
+  if (from_type_name != typeid(T).name())
+    mooseError("Kokkos array error: cannot load an array because the stored array is of type '",
+               MooseUtils::prettyCppType(libMesh::demangle(from_type_name.c_str())),
+               "' but the loading array is of type '",
+               MooseUtils::prettyCppType(libMesh::demangle(typeid(T).name())),
+               "'.");
+
+  unsigned int from_dimension;
+  dataLoad(stream, from_dimension, nullptr);
+
+  if (from_dimension != dimension)
+    mooseError("Kokkos array error: cannot load an array because the stored array is ",
+               from_dimension,
+               "D but the loading array is ",
+               dimension,
+               "D.");
+
+  std::vector<dof_id_type> from_n(dimension);
+  std::vector<dof_id_type> n(dimension);
+
+  for (unsigned int dim = 0; dim < dimension; ++dim)
+  {
+    dataLoad(stream, from_n[dim], nullptr);
+    n[dim] = array.n(dim);
+  }
+
+  if (from_n != n)
+    mooseError("Kokkos array error: cannot load an array because the stored array has dimensions (",
+               Moose::stringify(from_n),
+               ") but the loading array has dimensions (",
+               Moose::stringify(n),
+               ").");
+
+  if (array.isHostAlloc())
+  {
+    for (auto & value : array)
+      dataLoad(stream, value, context);
+
+    if (array.isDeviceAlloc())
+      array.copyToDevice();
+  }
+  else
+  {
+    std::vector<T> data(array.size());
+
+    for (auto & value : data)
+      dataLoad(stream, value, context);
+
+    array.copyIn(data.data(), Moose::Kokkos::MemcpyKind::HOST_TO_DEVICE, array.size());
+  }
+}
+
+#endif

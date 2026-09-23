@@ -1014,6 +1014,9 @@ public:
   virtual void addKokkosNodalKernel(const std::string & kernel_name,
                                     const std::string & name,
                                     InputParameters & parameters);
+  virtual void addKokkosDGKernel(const std::string & kernel_name,
+                                 const std::string & name,
+                                 InputParameters & parameters);
   virtual void addKokkosBoundaryCondition(const std::string & bc_name,
                                           const std::string & name,
                                           InputParameters & parameters);

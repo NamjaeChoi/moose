@@ -222,6 +222,12 @@ public:
   void
   addDGKernel(std::string dg_kernel_name, const std::string & name, InputParameters & parameters);
 
+#ifdef MOOSE_KOKKOS_ENABLED
+  void addKokkosDGKernel(const std::string & dg_kernel_name,
+                         const std::string & name,
+                         InputParameters & parameters);
+#endif
+
   /**
    * Adds an interface kernel
    * @param interface_kernel_name The type of the interface kernel

@@ -49,13 +49,35 @@ BlockRestrictable::initializeKokkosBlockRestrictable()
                     kokkos_mesh->getSubdomainContiguousNodeIDs(block).begin(),
                     kokkos_mesh->getSubdomainContiguousNodeIDs(block).end());
 
-    if (_moose_object->isParamValid("_kokkos_flux_kernel"))
+    if (_moose_object->isParamValid("_kokkos_flux_kernel") ||
+        _moose_object->isParamValid("_kokkos_dg_kernel"))
       for (const auto elem : _blk_mesh->getMesh().active_local_subdomain_elements_ptr_range(block))
       {
         const auto eid = kokkos_mesh->getContiguousElementID(elem);
 
         for (const auto side : make_range(elem->n_sides()))
+        {
+          if (_moose_object->isParamValid("_kokkos_dg_kernel"))
+          {
+            const auto neighbor = elem->neighbor_ptr(side);
+            if (!neighbor)
+              continue;
+
+            if (neighbor == libMesh::remote_elem)
+              mooseError("Kokkos DG kernels require one layer of element-side neighbors.");
+
+            if (!neighbor->active())
+              continue;
+
+            if (elem->level() != neighbor->level() || elem->p_level() != neighbor->p_level())
+              mooseError("Kokkos DG kernels currently support only conforming element faces.");
+
+            if (elem->id() > neighbor->id())
+              continue;
+          }
+
           element_side_ids.insert({eid, side});
+        }
       }
   }
 

@@ -26,6 +26,13 @@ AddDGKernelAction::AddDGKernelAction(const InputParameters & params) : MooseObje
 void
 AddDGKernelAction::act()
 {
-  if (_current_task == "add_dg_kernel")
+  if (_current_task != "add_dg_kernel")
+    return;
+
+#ifdef MOOSE_KOKKOS_ENABLED
+  if (_moose_object_pars.isKokkosObject())
+    _problem->addKokkosDGKernel(_type, _name, _moose_object_pars);
+  else
+#endif
     _problem->addDGKernel(_type, _name, _moose_object_pars);
 }

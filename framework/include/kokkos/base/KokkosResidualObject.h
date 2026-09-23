@@ -183,6 +183,24 @@ protected:
                                                        const unsigned int jvar,
                                                        const unsigned int comp = 0) const;
   /**
+   * Accumulate local elemental Jacobian contribution to tagged matrices with distinct row and
+   * column elements
+   * @param local_ke The local elemental Jacobian contribution
+   * @param row_elem The contiguous row element ID
+   * @param col_elem The contiguous column element ID
+   * @param i The test function DOF index
+   * @param j The trial function DOF index
+   * @param jvar The variable number for column
+   * @param comp The variable component
+   */
+  KOKKOS_FUNCTION void accumulateTaggedElementalMatrix(const Real local_ke,
+                                                       const ContiguousElementID row_elem,
+                                                       const ContiguousElementID col_elem,
+                                                       const unsigned int i,
+                                                       const unsigned int j,
+                                                       const unsigned int jvar,
+                                                       const unsigned int comp = 0) const;
+  /**
    * Accumulate local elemental Jacobian contribution to tagged matrices using automatic
    * differentiation (AD)
    * @param local_ke The local elemental Jacobian contribution
@@ -341,13 +359,25 @@ ResidualObject::accumulateTaggedElementalMatrix(const Real local_ke,
                                                 const unsigned int jvar,
                                                 const unsigned int comp) const
 {
+  accumulateTaggedElementalMatrix(local_ke, elem, elem, i, j, jvar, comp);
+}
+
+KOKKOS_FUNCTION inline void
+ResidualObject::accumulateTaggedElementalMatrix(const Real local_ke,
+                                                const ContiguousElementID row_elem,
+                                                const ContiguousElementID col_elem,
+                                                const unsigned int i,
+                                                const unsigned int j,
+                                                const unsigned int jvar,
+                                                const unsigned int comp) const
+{
   if (!local_ke)
     return;
 
   auto & sys = kokkosSystem(_kokkos_var.sys(comp));
-  auto row = sys.getElemLocalDofIndex(elem, i, _kokkos_var.var(comp));
+  auto row = sys.getElemLocalDofIndex(row_elem, i, _kokkos_var.var(comp));
   auto col = sys.isScalarVariable(jvar) ? sys.getScalarGlobalDofIndex(j, jvar)
-                                        : sys.getElemGlobalDofIndex(elem, j, jvar);
+                                        : sys.getElemGlobalDofIndex(col_elem, j, jvar);
 
   for (unsigned int t = 0; t < _matrix_tags.size(); ++t)
   {

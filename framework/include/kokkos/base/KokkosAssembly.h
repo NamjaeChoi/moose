@@ -34,6 +34,10 @@ public:
    */
   Assembly(FEProblemBase & problem);
   /**
+   * Mark that conforming neighbor quadrature point indices are needed
+   */
+  void setNeedsNeighborQpIndices() { _needs_neighbor_qp_indices = true; }
+  /**
    * Initialize assembly
    */
   void init();
@@ -90,6 +94,44 @@ public:
   KOKKOS_FUNCTION unsigned int getNumFaceQps(ElementInfo info, unsigned int side) const
   {
     return _n_qps_face(side, info.id);
+  }
+  /**
+   * Get whether neighbor quadrature point indices are available for an element side
+   * @param info The element information object
+   * @param side The side index
+   * @returns Whether neighbor quadrature point indices are available
+   */
+  KOKKOS_FUNCTION bool hasNeighborQpIndices(ElementInfo info, unsigned int side) const
+  {
+    return _neighbor_qp_index_map(side, info.id) != libMesh::invalid_uint;
+  }
+  /**
+   * Get the neighbor face quadrature point index corresponding to an element face quadrature point.
+   * The index addresses neighbor element type reference data cached using the current element's
+   * subdomain quadrature rule.
+   * @param info The element information object
+   * @param side The side index
+   * @param qp The element face quadrature point index
+   * @returns The neighbor face quadrature point index
+   */
+  KOKKOS_FUNCTION unsigned int
+  getNeighborQpIndex(ElementInfo info, unsigned int side, unsigned int qp) const
+  {
+    KOKKOS_ASSERT(hasNeighborQpIndices(info, side));
+    KOKKOS_ASSERT(qp < getNumFaceQps(info, side));
+
+    return _neighbor_qp_indices[_neighbor_qp_index_map(side, info.id)][qp];
+  }
+  /**
+   * Get the side index of the neighbor corresponding to an element side
+   * @param info The element information object
+   * @param side The side index
+   * @returns The neighbor side index
+   */
+  KOKKOS_FUNCTION unsigned int getNeighborSide(ElementInfo info, unsigned int side) const
+  {
+    KOKKOS_ASSERT(hasNeighborQpIndices(info, side));
+    return _neighbor_side(side, info.id);
   }
   /**
    * Get the starting offset of quadrature points of an element into the global quadrature point
@@ -387,8 +429,12 @@ private:
   ///@{
   Array<unsigned int> _n_qps;
   Array2D<unsigned int> _n_qps_face;
+  Array2D<unsigned int> _neighbor_side;
+  Array2D<unsigned int> _neighbor_qp_index_map;
+  Array<Array<unsigned int>> _neighbor_qp_indices;
 
   unsigned int _max_qps_per_elem = 0;
+  bool _needs_neighbor_qp_indices = false;
 
   Array<dof_id_type> _n_subdomain_qps;
   Array<dof_id_type> _n_subdomain_qps_face;

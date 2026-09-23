@@ -16,8 +16,10 @@
 #include "AuxiliarySystem.h"
 #include "Assembly.h"
 #include "BoundaryRestrictable.h"
+#include "MooseUtils.h"
 
 #include "libmesh/fe_interface.h"
+#include "libmesh/fe_map.h"
 #include "libmesh/reference_elem.h"
 
 namespace Moose::Kokkos
@@ -160,6 +162,15 @@ Assembly::initQuadrature()
   _n_qps_face.create(_mesh.getMaxSidesPerElem(), num_elems);
   _n_qps_face = 0;
 
+  if (_needs_neighbor_qp_indices)
+  {
+    _neighbor_qp_index_map.create(_mesh.getMaxSidesPerElem(), num_elems);
+    _neighbor_qp_index_map = libMesh::invalid_uint;
+
+    _neighbor_side.create(_mesh.getMaxSidesPerElem(), num_elems);
+    _neighbor_side = libMesh::invalid_uint;
+  }
+
   _qp_offset.create(num_elems);
   _qp_offset_face.create(_mesh.getMaxSidesPerElem(), num_elems);
   _qp_offset_face = libMesh::DofObject::invalid_id;
@@ -202,6 +213,152 @@ Assembly::initQuadrature()
       }
     }
 
+  using NeighborQpIndexKey = std::
+      tuple<SubdomainID, ElemType, unsigned int, ElemType, unsigned int, std::vector<unsigned int>>;
+  std::map<NeighborQpIndexKey, unsigned int> neighbor_qp_index_map;
+  std::vector<std::vector<unsigned int>> neighbor_qp_indices;
+
+  if (_needs_neighbor_qp_indices)
+    for (const auto elem : *_mesh.getActiveLocalElementRange())
+    {
+      const auto eid = kokkosMesh().getContiguousElementID(elem);
+
+      for (const auto side : elem->side_index_range())
+      {
+        const auto neighbor = elem->neighbor_ptr(side);
+        if (!neighbor || neighbor == libMesh::remote_elem)
+          continue;
+
+        const auto neighbor_side = neighbor->which_neighbor_am_i(elem);
+        _neighbor_side(side, eid) = neighbor_side;
+        const auto elem_side = elem->build_side_ptr(side);
+        const auto neighbor_side_elem = neighbor->build_side_ptr(neighbor_side);
+        if (elem_side->type() != neighbor_side_elem->type())
+          mooseError("Kokkos neighbor quadrature point indexing requires matching conforming side "
+                     "element types, but element ",
+                     elem->id(),
+                     " side ",
+                     side,
+                     " and neighbor element ",
+                     neighbor->id(),
+                     " side ",
+                     neighbor_side,
+                     " have different types.");
+
+        std::vector<unsigned int> node_permutation(elem_side->n_nodes());
+        for (const auto node : elem_side->node_index_range())
+        {
+          node_permutation[node] = neighbor_side_elem->get_node_index(elem_side->node_ptr(node));
+          if (node_permutation[node] == libMesh::invalid_uint)
+            mooseError("Kokkos neighbor quadrature point indexing requires conforming sides, but "
+                       "element ",
+                       elem->id(),
+                       " side ",
+                       side,
+                       " and neighbor element ",
+                       neighbor->id(),
+                       " side ",
+                       neighbor_side,
+                       " do not share the same nodes.");
+        }
+
+        const NeighborQpIndexKey key(elem->subdomain_id(),
+                                     elem->type(),
+                                     side,
+                                     neighbor->type(),
+                                     neighbor_side,
+                                     node_permutation);
+        const auto [it, inserted] =
+            neighbor_qp_index_map.emplace(key, neighbor_qp_index_map.size());
+        _neighbor_qp_index_map(side, eid) = it->second;
+
+        if (!inserted)
+          continue;
+
+        const auto & reference_side = libMesh::ReferenceElem::get(elem_side->type());
+        auto oriented_neighbor_reference_side = Elem::build(reference_side.type());
+        for (const auto node : oriented_neighbor_reference_side->node_index_range())
+          oriented_neighbor_reference_side->set_node(node) =
+              reference_side.node_ptr(node_permutation[node]);
+
+        const auto elem_sid = kokkosMesh().getContiguousSubdomainID(elem->subdomain_id());
+        const auto elem_type = libmesh_map_find(kokkosMesh().getElementTypeMap(), elem->type());
+        const auto neighbor_type =
+            libmesh_map_find(kokkosMesh().getElementTypeMap(), neighbor->type());
+        const auto & q_points = _q_points_face(elem_sid, elem_type)[side];
+        const auto & neighbor_q_points = _q_points_face(elem_sid, neighbor_type)[neighbor_side];
+        if (q_points.size() != neighbor_q_points.size())
+          mooseError("Kokkos neighbor quadrature point indexing requires matching face quadrature "
+                     "rules, but element ",
+                     elem->id(),
+                     " side ",
+                     side,
+                     " has ",
+                     q_points.size(),
+                     " points and neighbor element ",
+                     neighbor->id(),
+                     " side ",
+                     neighbor_side,
+                     " has ",
+                     neighbor_q_points.size(),
+                     " points.");
+
+        auto & indices = neighbor_qp_indices.emplace_back(q_points.size(), libMesh::invalid_uint);
+        std::vector<bool> matched(neighbor_q_points.size(), false);
+        for (const auto qp : make_range(q_points.size()))
+        {
+          const Point point(q_points[qp](0), q_points[qp](1), q_points[qp](2));
+          const auto neighbor_point =
+              FEMap::map(elem_side->dim(), oriented_neighbor_reference_side.get(), point);
+
+          for (const auto neighbor_qp : make_range(neighbor_q_points.size()))
+          {
+            if (matched[neighbor_qp])
+              continue;
+
+            bool matches = true;
+            for (const auto component : make_range(Moose::dim))
+              if (!MooseUtils::absoluteFuzzyEqual(neighbor_point(component),
+                                                  neighbor_q_points[neighbor_qp](component)))
+              {
+                matches = false;
+                break;
+              }
+
+            if (matches)
+            {
+              indices[qp] = neighbor_qp;
+              matched[neighbor_qp] = true;
+              break;
+            }
+          }
+
+          if (indices[qp] == libMesh::invalid_uint)
+            mooseError("The face quadrature points on element ",
+                       elem->id(),
+                       " side ",
+                       side,
+                       " do not map one-to-one onto the reference quadrature points of neighbor "
+                       "element ",
+                       neighbor->id(),
+                       " side ",
+                       neighbor_side,
+                       ". Kokkos DG requires orientation-compatible face quadrature rules.");
+        }
+      }
+    }
+
+  if (_needs_neighbor_qp_indices)
+  {
+    _neighbor_qp_indices.create(neighbor_qp_indices.size());
+    for (const auto i : index_range(neighbor_qp_indices))
+    {
+      _neighbor_qp_indices[i].create(neighbor_qp_indices[i].size());
+      for (const auto qp : index_range(neighbor_qp_indices[i]))
+        _neighbor_qp_indices[i][qp] = neighbor_qp_indices[i][qp];
+    }
+  }
+
   _q_points.copyToDeviceNested();
   _q_points_face.copyToDeviceNested();
   _weights.copyToDeviceNested();
@@ -209,6 +366,12 @@ Assembly::initQuadrature()
 
   _n_qps.copyToDevice();
   _n_qps_face.copyToDevice();
+  if (_needs_neighbor_qp_indices)
+  {
+    _neighbor_side.copyToDevice();
+    _neighbor_qp_index_map.copyToDevice();
+    _neighbor_qp_indices.copyToDeviceNested();
+  }
   _n_subdomain_qps.copyToDevice();
   _n_subdomain_qps_face.copyToDevice();
   _qp_offset.copyToDevice();

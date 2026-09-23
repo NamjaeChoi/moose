@@ -8,6 +8,7 @@
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
 #include "KokkosKernelBase.h"
+#include "KokkosDGKernel.h"
 #include "KokkosNodalKernelBase.h"
 #include "KokkosNodalBCBase.h"
 #include "KokkosIntegratedBCBase.h"
@@ -39,6 +40,18 @@ NonlinearSystemBase::addKokkosNodalKernel(const std::string & kernel_name,
       _factory.create<Moose::Kokkos::NodalKernelBase>(kernel_name, name, parameters);
   _kokkos_nodal_kernels.addObject(kernel, 0);
   postAddResidualObject(*kernel);
+}
+
+void
+NonlinearSystemBase::addKokkosDGKernel(const std::string & dg_kernel_name,
+                                       const std::string & name,
+                                       InputParameters & parameters)
+{
+  std::shared_ptr<Moose::Kokkos::DGKernel> kernel =
+      _factory.create<Moose::Kokkos::DGKernel>(dg_kernel_name, name, parameters);
+  _kokkos_kernels.addObject(kernel, 0);
+  postAddResidualObject(*kernel);
+  _doing_dg = true;
 }
 
 void

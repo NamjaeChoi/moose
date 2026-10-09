@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -12,7 +12,7 @@
 InputParameters
 KokkosRadiativeHeatFluxBCBase::validParams()
 {
-  InputParameters params = IntegratedBCValue::validParams();
+  InputParameters params = Moose::Kokkos::IntegratedBCValue::validParams();
   params.addParam<Real>("stefan_boltzmann_constant", 5.670367e-8, "The Stefan-Boltzmann constant.");
   params.addParam<Real>("Tinfinity", 0, "Temperature of the body in radiative heat transfer.");
   params.addClassDescription("Boundary condition for radiative heat flux where temperature and the"
@@ -21,7 +21,7 @@ KokkosRadiativeHeatFluxBCBase::validParams()
 }
 
 KokkosRadiativeHeatFluxBCBase::KokkosRadiativeHeatFluxBCBase(const InputParameters & parameters)
-  : IntegratedBCValue(parameters),
+  : Moose::Kokkos::IntegratedBCValue(parameters),
     _sigma_stefan_boltzmann(getParam<Real>("stefan_boltzmann_constant")),
     _tinf(getParam<Real>("Tinfinity"))
 {

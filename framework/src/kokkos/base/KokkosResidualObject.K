@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -19,10 +19,6 @@ ResidualObject::validParams()
 {
   auto params = ::ResidualObject::validParams();
 
-  // Kokkos objects are formulated on the reference configuration. Objects that need the current
-  // configuration couple the displacements and pull their integrands back to the reference
-  // configuration.
-  params.addPrivateParam<bool>("use_displaced_mesh", false);
   params.addCoupledVar("displacements",
                        "The displacements defining the current configuration for objects "
                        "that integrate over it");

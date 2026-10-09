@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -27,7 +27,8 @@ KokkosDirichletBCTempl<is_ad>::validParams()
 template <bool is_ad>
 KokkosDirichletBCTempl<is_ad>::KokkosDirichletBCTempl(const InputParameters & parameters)
   : Moose::Kokkos::DirichletBCBaseTempl<is_ad>(parameters),
-    _value(this->template getParam<Real>("value"))
+    _value(this->template getParam<Real>("value")),
+    _nodal_value(makeNodalValue())
 {
 }
 

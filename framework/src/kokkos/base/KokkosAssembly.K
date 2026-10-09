@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -569,7 +569,7 @@ Assembly::cachePhysicalMap()
   const auto num_subdomains = kokkosMesh().getNumSubdomains();
   const auto num_elems = kokkosMesh().getNumLocalElements();
 
-  _jacobian.create(num_subdomains);
+  _dxi_dx.create(num_subdomains);
   _jxw.create(num_subdomains);
   _xyz.create(num_subdomains);
 
@@ -577,12 +577,12 @@ Assembly::cachePhysicalMap()
   {
     auto sid = kokkosMesh().getContiguousSubdomainID(subdomain);
 
-    _jacobian[sid].createDevice(_n_subdomain_qps[sid]);
+    _dxi_dx[sid].createDevice(_n_subdomain_qps[sid]);
     _jxw[sid].createDevice(_n_subdomain_qps[sid]);
     _xyz[sid].createDevice(_n_subdomain_qps[sid]);
   }
 
-  _jacobian.copyToDeviceNested();
+  _dxi_dx.copyToDeviceNested();
   _jxw.copyToDeviceNested();
   _xyz.copyToDeviceNested();
 
@@ -597,12 +597,12 @@ Assembly::operator()(const ThreadID tid) const
   auto info = kokkosMesh().getElementInfo(tid);
   auto offset = getQpOffset(info);
 
-  auto jacobian = &_jacobian[info.subdomain][offset];
+  auto dxi_dx = &_dxi_dx[info.subdomain][offset];
   auto jxw = &_jxw[info.subdomain][offset];
   auto xyz = &_xyz[info.subdomain][offset];
 
   for (unsigned int qp = 0; qp < getNumQps(info); ++qp)
-    computePhysicalMap(info, qp, &jacobian[qp], &jxw[qp], &xyz[qp]);
+    computePhysicalMap(info, qp, &dxi_dx[qp], &jxw[qp], &xyz[qp]);
 }
 
 } // namespace Moose::Kokkos

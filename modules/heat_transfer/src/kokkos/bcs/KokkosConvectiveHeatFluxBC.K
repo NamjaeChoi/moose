@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -14,7 +14,7 @@ registerKokkosResidualObject("HeatTransferApp", KokkosConvectiveHeatFluxBC);
 InputParameters
 KokkosConvectiveHeatFluxBC::validParams()
 {
-  InputParameters params = IntegratedBCValue::validParams();
+  InputParameters params = Moose::Kokkos::IntegratedBCValue::validParams();
   params.addClassDescription(
       "Convective heat transfer boundary condition with temperature and heat "
       "transfer coefficent given by material properties.");
@@ -31,7 +31,7 @@ KokkosConvectiveHeatFluxBC::validParams()
 }
 
 KokkosConvectiveHeatFluxBC::KokkosConvectiveHeatFluxBC(const InputParameters & parameters)
-  : IntegratedBCValue(parameters),
+  : Moose::Kokkos::IntegratedBCValue(parameters),
     _T_infinity(getKokkosMaterialProperty<Real>("T_infinity")),
     _htc(getKokkosMaterialProperty<Real>("heat_transfer_coefficient")),
     _htc_dT(getKokkosMaterialProperty<Real>("heat_transfer_coefficient_dT"))

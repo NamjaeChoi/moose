@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -320,7 +320,7 @@ FESystem::operator()(const ThreadID tid) const
   {
     auto & phi = kokkosAssembly().getVectorPhi(sid, elem_type, fe_type);
     auto & grad_phi = kokkosAssembly().getVectorGradPhi(sid, elem_type, fe_type);
-    auto jacobian = kokkosAssembly().getJacobian(info, qp).transpose();
+    auto dxi_dx = kokkosAssembly().getDxiDx(info, qp).transpose();
 
     Real3 value = 0;
     Real33 grad = 0;
@@ -333,7 +333,7 @@ FESystem::operator()(const ThreadID tid) const
       grad += vector * grad_phi(i, qp);
     }
 
-    grad = grad * jacobian;
+    grad = grad * dxi_dx;
 
     getVectorQpVectorValue(info, qp_offset + qp, var, tag) = value;
     getVectorQpVectorGrad(info, qp_offset + qp, var, tag) = grad;
@@ -344,7 +344,7 @@ FESystem::operator()(const ThreadID tid) const
   {
     auto & phi = kokkosAssembly().getPhi(sid, elem_type, fe_type);
     auto & grad_phi = kokkosAssembly().getGradPhi(sid, elem_type, fe_type);
-    auto jacobian = kokkosAssembly().getJacobian(info, qp);
+    auto dxi_dx = kokkosAssembly().getDxiDx(info, qp);
 
     Real value = 0;
     Real3 grad = 0;
@@ -357,7 +357,7 @@ FESystem::operator()(const ThreadID tid) const
       grad += vector * grad_phi(i, qp);
     }
 
-    grad = jacobian * grad;
+    grad = dxi_dx * grad;
 
     getVectorQpValue(info, qp_offset + qp, var, tag) = value;
     getVectorQpGrad(info, qp_offset + qp, var, tag) = grad;

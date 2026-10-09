@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -14,7 +14,7 @@ registerKokkosResidualObject("HeatTransferApp", KokkosHeatConduction);
 InputParameters
 KokkosHeatConduction::validParams()
 {
-  InputParameters params = KernelGrad::validParams();
+  InputParameters params = Moose::Kokkos::KernelGrad::validParams();
   params.addClassDescription("Diffusive heat conduction term $-\\nabla\\cdot(k\\nabla T)$ of the "
                              "thermal energy conservation equation");
   params.addParam<MaterialPropertyName>(
@@ -28,7 +28,7 @@ KokkosHeatConduction::validParams()
 }
 
 KokkosHeatConduction::KokkosHeatConduction(const InputParameters & parameters)
-  : KernelGrad(parameters), _deformation(*this)
+  : Moose::Kokkos::KernelGrad(parameters), _deformation(*this)
 {
   _thermal_conductivity = getKokkosMaterialProperty<Real>("thermal_conductivity");
 

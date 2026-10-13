@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -38,6 +38,12 @@ public:
    * Copy constructor for parallel dispatch
    */
   IntegratedBCBase(const IntegratedBCBase & object);
+
+protected:
+  /**
+   * Outward unit normal vector of the side on the configuration of the BC
+   */
+  const NormalAccessor _normals;
 };
 
 } // namespace Moose::Kokkos

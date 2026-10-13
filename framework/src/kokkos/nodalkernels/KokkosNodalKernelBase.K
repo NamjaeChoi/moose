@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -30,6 +30,7 @@ NodalKernelBase::NodalKernelBase(const InputParameters & parameters, Moose::VarF
     BoundaryRestrictable(this, true), // true for applying to nodesets
     CoupleableMooseVariableDependencyIntermediateInterface(this, true)
 {
+  _configuration = Configuration(*this);
 }
 
 NodalKernelBase::NodalKernelBase(const NodalKernelBase & object)

@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -27,6 +27,7 @@ NodalBCBase::NodalBCBase(const InputParameters & parameters, Moose::VarFieldType
   : BoundaryCondition(parameters, field_type, true),
     CoupleableMooseVariableDependencyIntermediateInterface(this, true)
 {
+  _configuration = Configuration(*this);
 }
 
 NodalBCBase::NodalBCBase(const NodalBCBase & object)

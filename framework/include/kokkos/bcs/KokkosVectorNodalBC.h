@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -108,7 +108,8 @@ VectorNodalBC::operator()(ResidualLoop, const ThreadID tid, const Derived & bc) 
   if (!sys.isNodalDefined(node, _kokkos_var.var()))
     return;
 
-  AssemblyDatum datum(node, kokkosAssembly(), kokkosSystems(), _kokkos_var, _kokkos_var.var());
+  AssemblyDatum datum(
+      node, kokkosAssembly(), kokkosSystems(), _kokkos_var, _kokkos_var.var(), _configuration);
 
   Real3 local_re = bc.template computeQpResidual<Derived>(0, datum);
 
@@ -126,7 +127,8 @@ VectorNodalBC::operator()(JacobianLoop, const ThreadID tid, const Derived & bc) 
   if (!sys.isNodalDefined(node, _kokkos_var.var()))
     return;
 
-  AssemblyDatum datum(node, kokkosAssembly(), kokkosSystems(), _kokkos_var, _kokkos_var.var());
+  AssemblyDatum datum(
+      node, kokkosAssembly(), kokkosSystems(), _kokkos_var, _kokkos_var.var(), _configuration);
 
   Real3 local_ke = bc.template computeQpJacobian<Derived>(0, datum);
 
@@ -145,7 +147,7 @@ VectorNodalBC::operator()(OffDiagJacobianLoop, const ThreadID tid, const Derived
   if (!sys.isNodalDefined(node, _kokkos_var.var()))
     return;
 
-  AssemblyDatum datum(node, kokkosAssembly(), kokkosSystems(), _kokkos_var, jvar);
+  AssemblyDatum datum(node, kokkosAssembly(), kokkosSystems(), _kokkos_var, jvar, _configuration);
 
   Real3 local_ke = bc.template computeQpOffDiagJacobian<Derived>(jvar, 0, datum);
 

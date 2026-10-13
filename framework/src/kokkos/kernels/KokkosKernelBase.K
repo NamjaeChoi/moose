@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -44,6 +44,7 @@ KernelBase::KernelBase(const InputParameters & parameters, Moose::VarFieldType f
     MaterialPropertyInterface(this, blockIDs(), Moose::EMPTY_BOUNDARY_IDS),
     LocalParallelInterface(this)
 {
+  _configuration = Configuration(*this);
 }
 
 KernelBase::KernelBase(const KernelBase & object)

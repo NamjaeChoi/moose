@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -51,6 +51,16 @@ MaterialData::getKokkosPropertyHelper(
     return storage.addKokkosPropertyState(prop_name, state, shell);
   else
     return storage.getKokkosProperty(prop_name);
+}
+
+void
+MaterialData::setKokkosADInputs(const std::string & prop_name,
+                                const MaterialBase * declarer,
+                                const std::vector<Moose::Kokkos::ADSlotBlock> & inputs)
+{
+  auto & storage = Moose::Kokkos::MaterialPropertyStorage::cast(_storage);
+
+  storage.setKokkosADInputs(prop_name, declarer, inputs);
 }
 
 bool

@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -95,6 +95,16 @@ public:
                                                const bool on_demand,
                                                const PropertyConstantOption constant_option,
                                                std::shared_ptr<MaterialPropertyBase> shell);
+  /**
+   * Record the quadrature point quantities of the stored derivatives of a pointwise AD property on
+   * the subdomains of its declarer
+   * @param prop_name The name of the property holding the derivatives
+   * @param declarer The Kokkos material declaring the property
+   * @param inputs The slot blocks of the stored derivatives
+   */
+  void setKokkosADInputs(const std::string & prop_name,
+                         const ::MaterialBase * declarer,
+                         const std::vector<ADSlotBlock> & inputs);
   /**
    * Get a material property
    * @param prop_name The property name

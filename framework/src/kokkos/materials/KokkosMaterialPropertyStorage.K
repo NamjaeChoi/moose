@@ -1,5 +1,5 @@
 //* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
+//* https://mooseframework.inl.gov
 //*
 //* All rights reserved, see COPYRIGHT for full restrictions
 //* https://github.com/idaholab/moose/blob/master/COPYRIGHT
@@ -163,6 +163,18 @@ MaterialPropertyStorage::declareKokkosProperty(const std::string & prop_name,
   }
 
   return addKokkosProperty(prop_name, type, 0, declarer, shell);
+}
+
+void
+MaterialPropertyStorage::setKokkosADInputs(const std::string & prop_name,
+                                           const ::MaterialBase * declarer,
+                                           const std::vector<ADSlotBlock> & inputs)
+{
+  auto & record = libmesh_map_find(_kokkos_prop_records, prop_name);
+  auto & blocks = declarer->boundaryRestricted() ? declarer->meshBlockIDs() : declarer->blockIDs();
+
+  for (const auto block : blocks)
+    record.ad_inputs[block] = inputs;
 }
 
 MaterialPropertyBase &
